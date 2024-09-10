@@ -1,2 +1,1 @@
-if user_choice == "close":
-            run = False
+screen_width, screen_height - controls_panel

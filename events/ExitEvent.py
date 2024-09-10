@@ -37,22 +37,30 @@ def draw_button(text, x, y, w, h, color, hover_color, action=None):
 def confirmation_screen():
     start_time = time.time() + 1
     while True:
-        screen.fill(colors['black'])
+        # Creare una superficie con canale alfa per lo sfondo trasparente
+        overlay = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 180))  # Nero con trasparenza (valore alfa: 180)
+
+        # Riempire lo sfondo principale
+        screen.fill((0, 0, 0))  # Colore di base per lo sfondo
+
+        # Disegnare l'overlay semitrasparente sopra lo sfondo
+        screen.blit(overlay, (0, 0))
 
         # Tempo trascorso
         elapsed_time = time.time() - start_time
-        remaining_time = 3 - elapsed_time
+        remaining_time = 3 - elapsed_time  # Timer a 3 secondi
 
         if remaining_time <= 1:
             return "cancel"
 
         # Disegna il testo di conferma e il timer
         draw_text("Sei sicuro di voler uscire?", font, colors['white'], screen, screen_width // 2, screen_height // 4)
-        draw_text(f"Tempo rimasto: {int(remaining_time)}", font, colors['red']['opaque'], screen, screen_width // 2, screen_height // 2 + 70)
+        draw_text(f"Tempo rimasto: {int(remaining_time)}", font, colors['red']['dark'], screen, screen_width // 2, screen_height // 2 + 70)
 
         # Disegna i pulsanti "Chiudi" e "Annulla"
-        close_action = draw_button("Chiudi", screen_width // 2 - 120, screen_height // 2, 100, 50, colors['red']['dark'], (200, 0, 0), action="close")
-        cancel_action = draw_button("Annulla", screen_width // 2 + 20, screen_height // 2, 100, 50, colors['green']['dark'], (0, 200, 0), action="cancel")
+        close_action = draw_button("Chiudi", screen_width // 2 - 150, screen_height // 2, 100, 50, colors['red']['dark'], (200, 0, 0), action="close")
+        cancel_action = draw_button("Annulla", screen_width // 2 + 50, screen_height // 2, 100, 50, colors['green']['dark'], (0, 200, 0), action="cancel")
 
         # Gestione degli eventi
         for event in pygame.event.get():

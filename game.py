@@ -1,9 +1,11 @@
 import pygame
 import sys
-from settings.settings import screen_width, screen_height, screen
+from settings.settings import screen, screen_height, screen_width
 from settings.colors import colors
 from events.ExitEvent import confirmation_screen
 
+clock= pygame.time.Clock()
+fps = 60
 pygame.init()
 
 # Font per il testo
@@ -16,13 +18,25 @@ def draw_text(text, font, color, surface, x, y):
     textrect.center = (x, y)
     surface.blit(textobj, textrect)
 
+# Carica e scala le immagini
+background_img = pygame.image.load("./storage/media/background-1.png").convert_alpha()
+background_img = pygame.transform.scale(background_img, (screen_width, screen_height))
+
+# Funzione per disegnare lo sfondo
+def draw_bg():
+    screen.blit(background_img, (0, 0))
+
+
 # Main loop del gioco
 run = True
 while run:
+    # Imposta gli fps al valore della variabile (60)
+    clock.tick(fps)
+    # Disegna lo sfondo
+    draw_bg()
+
     # Gestione degli eventi
     for event in pygame.event.get():
-
-        ## CHIUDI
         if event.type == pygame.QUIT:
             # Quando l'utente preme la X, mostra la schermata di conferma
             user_choice = confirmation_screen()
@@ -33,11 +47,7 @@ while run:
                 user_choice = confirmation_screen()
                 if user_choice == "close":
                     run = False
-        ## /CHIUDI
-        
 
-
-    screen.fill(colors['gray']['dark'])
     # Aggiornamento dello schermo
     pygame.display.update()
 
