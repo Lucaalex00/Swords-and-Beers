@@ -21,22 +21,23 @@ run = True
 while run:
     # Gestione degli eventi
     for event in pygame.event.get():
+
+        ## CHIUDI
         if event.type == pygame.QUIT:
             # Quando l'utente preme la X, mostra la schermata di conferma
             user_choice = confirmation_screen()
             if user_choice == "close":
                 run = False
-            # Non c'è bisogno di gestire ESC qui se gestito nella schermata di conferma
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 user_choice = confirmation_screen()
                 if user_choice == "close":
                     run = False
+        ## /CHIUDI
+        
 
-    # Esempio di disegno sullo schermo (gioco principale)
-    screen.fill(colors['black'])
-    draw_text("Premi ESC per uscire o clicca su chiudi", font, colors['black'], screen, screen_width // 2, screen_height // 2)
 
+    screen.fill(colors['gray']['dark'])
     # Aggiornamento dello schermo
     pygame.display.update()
 

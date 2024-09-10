@@ -35,7 +35,7 @@ def draw_button(text, x, y, w, h, color, hover_color, action=None):
 
 # Funzione per la schermata di conferma
 def confirmation_screen():
-    start_time = time.time()
+    start_time = time.time() + 1
     while True:
         screen.fill(colors['black'])
 
@@ -43,7 +43,7 @@ def confirmation_screen():
         elapsed_time = time.time() - start_time
         remaining_time = 3 - elapsed_time
 
-        if remaining_time <= 0:
+        if remaining_time <= 1:
             return "cancel"
 
         # Disegna il testo di conferma e il timer
