@@ -1,67 +1,74 @@
 # game.py (MAIN)
 
+# IMPORTS #
 import pygame
 import sys
+
+# GLOBAL VAR #
+import global_var 
+
+# SETTINGS #
 from settings.settings import screen, screen_height, screen_width, controls_panel
 from settings.colors import colors
-from events.ExitEvent import confirmation_screen
+from settings.images import background_img, panel_img, sword_img
+
+# CLASSES #
 from classes.fighter import knight,bandit_list,bandit1,bandit2
 from classes.healthbar import knight_health_bar, bandit1_health_bar, bandit2_health_bar
 from classes.manabar import knight_mana_bar, bandit1_mana_bar, bandit2_mana_bar
+
+# EVENTS #
+from events.ExitEvent import confirmation_screen
+from events.BattleEvent import playerAttackAction, enemyAttackAction,resetAttackActions
+
+# FRAME RATE SET
 clock= pygame.time.Clock()
 fps = 60
 
-#INIT
+# Init Pygame
 pygame.init()
 
-# Definiamo i Fonts
+# Fonts
 font_TNR = pygame.font.SysFont('Times New Roman', 26)
 
-# Carica e scala le immagini
-background_img = pygame.image.load("./storage/backgrounds/background-3.png").convert_alpha()
-
-panel_img = pygame.image.load("./storage/backgrounds/panel.png").convert_alpha()
-panel_img = pygame.transform.scale(panel_img, (screen_width, controls_panel))
-
-# Funzione per disegneare il testo delle barre della vita e del mana
-def draw_text_health_bars(text, font, text_color, x, y):
+# Def draw health/mana bar
+def draw_text_bars(text, font, text_color, x, y):
     img = font.render(text, True, text_color)
     screen.blit(img, (x, y))
 
-# Funzione per disegnare lo sfondo
+# Def draw background
 def draw_bg():
     screen.blit(background_img, (0, 0))
 
-# Funzione per disegnare il menu
+# Def draw controls panel
 def draw_panel():
-    # Disegna il pannello rettangolare
+    # Draw Rectangle area
     screen.blit(panel_img, (0, screen_height - controls_panel))
     
-    # Mostra le INFO dei personaggi (TITOLO)
-    draw_text_health_bars(f'NAME |  HP  | MANA' , font_TNR, colors['black'], 100, screen_height - controls_panel + 10)
-    draw_text_health_bars(f'NAME |  HP  | MANA' , font_TNR, colors['black'], 550, screen_height - controls_panel + 10)
+    # Show info (STATS TITLES)
+    draw_text_bars(f'NAME |  HP  | MANA' , font_TNR, colors['black'], 100, screen_height - controls_panel + 10)
+    draw_text_bars(f'NAME |  HP  | MANA' , font_TNR, colors['black'], 550, screen_height - controls_panel + 10)
 
-    # Mostra le INFO dei personaggi (STATS)
+    # Show Name & Hp / Mana (PC).
+    draw_text_bars(f'{knight.name}     {knight.hp}       {knight.mana}', font_TNR, colors['gray']['opaque'], 100, screen_height - controls_panel + 40)
 
-    # Mostra il nome e la salute (PC).
-    draw_text_health_bars(f'{knight.name}     {knight.hp}       {knight.mana}', font_TNR, colors['gray']['opaque'], 100, screen_height - controls_panel + 40)
-
-    # Ciclo all'interno della mia bandit_list
+    # Cycle bandit_list
     for distance, i in enumerate(bandit_list):
-        # Mostra il nome e la salute (ENEMIES).
-        draw_text_health_bars(f'{i.name}      {i.hp}        {i.mana}', font_TNR, colors['gray']['opaque'], 550, (screen_height - controls_panel) + 40 + distance * 50)
+        # Show Name & Hp / Mana (ENEMIES).
+        draw_text_bars(f'{i.name}      {i.hp}        {i.mana}', font_TNR, colors['gray']['opaque'], 550, (screen_height - controls_panel) + 40 + distance * 50)
 
-# Main loop del gioco
+
+# Main game Loop
 run = True
 while run:
 
-    # Imposta gli fps al valore della variabile (60)
+    # Set FPS (60)
     clock.tick(fps)
 
-    # Disegna lo sfondo
+    # Draw Background
     draw_bg()
 
-    # Disegna il menu
+    # Draw Menu
     draw_panel()
     knight_health_bar.draw_hp(knight.hp)
     bandit1_health_bar.draw_hp(bandit1.hp)
@@ -71,32 +78,78 @@ while run:
     bandit1_mana_bar.draw_mana(bandit1.mana)
     bandit2_mana_bar.draw_mana(bandit2.mana)
 
-    knight.mana = 5
-    # Disegna il Fighter
+    # Draw Fighter
     knight.update()
     knight.draw()
 
-    # Disegna i nemici    
+    # Draw Enemies  
     for bandit in bandit_list :
         bandit.draw()
         bandit.update()
 
-    # Gestione degli eventi
+    # Events Management
+
+    # Fight Event Management
+
+        # Player Turn
+        playerAttackAction()
+
+        # Enemies Turn
+        enemyAttackAction()
+        
+        # Reset Fight
+        resetAttackActions()
+
+    # Reset Action Variables
+        
+        # Make sure mouse is visible
+        pygame.mouse.set_visible(True)
+
+        # Keep mouse Position
+        pos = pygame.mouse.get_pos()
+
+        # ATTACK INIT & SET ENEMY CLICKED
+    for count, bandit in enumerate(bandit_list):
+
+        # bandit area & mouse cursor collides
+        if bandit.rect.collidepoint(pos):
+
+            # Hide Cursor and Show Sword
+            pygame.mouse.set_visible(False)
+            screen.blit(sword_img, pos)
+
+            # Check if mouse is clicked
+            if global_var.clicked:  
+                global_var.attackAction = True  # AttackAction = True
+
+                global_var.target = bandit_list[count]  # Target = Clicked enemy
+
+                global_var.clicked = False  # RESET
+
     for event in pygame.event.get():
+
+        # QUIT EVENT
         if event.type == pygame.QUIT:
-            # Quando l'utente preme la X, mostra la schermata di conferma
+
+            # When user click "X", show ExitEvent Display
             user_choice = confirmation_screen()
             if user_choice == "close":
                 run = False
+
         elif event.type == pygame.KEYDOWN:
+            # When user press "ESC", Show ExitEvent Display
             if event.key == pygame.K_ESCAPE:
                 user_choice = confirmation_screen()
                 if user_choice == "close":
                     run = False
+        
+        # CLICK EVENT
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            global_var.clicked = True
 
-    # Aggiornamento dello schermo
+    # Display Update
     pygame.display.update()
 
-# Chiusura di pygame
+# Close Pygame
 pygame.quit()
 sys.exit()

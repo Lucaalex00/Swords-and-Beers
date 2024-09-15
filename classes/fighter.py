@@ -1,7 +1,9 @@
 # fighter.py
 
 import pygame
+import random
 from settings.settings import screen
+from settings.images import sword_img
 class Fighter() :
 
     # Constructor
@@ -17,10 +19,10 @@ class Fighter() :
         self.alive = True
         self.action = 0 # 0: Idle - 1: Attack - 2: Hurt - 3: Dead 
         
+        # Animation & Frame Rate
         self.animation_list = []
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
-
 
         # Idle Animations
         temp_list = []
@@ -60,6 +62,7 @@ class Fighter() :
         # Avatar position
         self.rect = self.image.get_rect()
         self.rect.center= (x, y)
+        print(f'{name} rect: {self.rect}')  # Verifica la posizione e dimensione del rettangolo
 
     # Draw Function
     def draw(self):
@@ -81,7 +84,43 @@ class Fighter() :
 
         # Repeat animation if has run out then reset to the start
         if self.frame_index >= len(self.animation_list[self.action]):
-            self.frame_index= 0
+            self.idle()
+
+    def idle(self) : 
+        self.action = 0 # IDLE
+        self.frame_index = 0
+        self.update_time = pygame.time.get_ticks()
+
+    """  
+    def hurt(self) :
+        self.action = 2 # HURT
+        self.frame_index = 0
+        self.update_time = pygame.time.get_ticks() 
+    """
+
+    # Attack Function
+    def attack(self, target):
+    # Deal damage to target
+
+        # DMG Range
+        randRange = random.randint(-5, 5)
+        
+        # Add randRange with self.strength
+        damage = self.strength + randRange
+
+        # Remove target.hp with damage output
+        target.hp -= damage
+
+        # Check if target has DIED
+        if target.hp < 1:
+            target.hp = 0
+            target.alive = False
+            target.action = 3 # DEATH
+
+        self.action = 1 # ATTACK
+        # target.action = 2 # HURT
+        self.frame_index = 0
+        self.update_time = pygame.time.get_ticks()
 
 
 # Playable Characters
