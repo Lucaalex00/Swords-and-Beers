@@ -1,6 +1,10 @@
 # BattleEvent.py
 
+from settings.settings import screen
+from settings.colors import colors
+
 from classes.fighter import knight,bandit_list
+from classes.damagetext import DamageText,damage_text_group
 
 # GLOBAL VAR #
 import global_var
@@ -32,7 +36,6 @@ def playerAttackAction():
                 # Potion
                 if global_var.potionAction: 
                     if knight.potions > 0:
-                        knight.potions -= 1
                         current_fighter += 1
                         action_cooldown = 0
                         if knight.max_hp - knight.hp > global_var.potionEffect:
@@ -40,6 +43,12 @@ def playerAttackAction():
                         else:
                             heal_amount = knight.max_hp - knight.hp
                         knight.hp += heal_amount
+                        knight.potions -= 1
+
+                        # Text appears
+                        damage_text = DamageText(knight.rect.centerx, knight.rect.y, str(heal_amount), colors['green']['opaque'])
+                        damage_text_group.add(damage_text)
+                        
                     else:
                         knight.potions = 0
                 global_var.potionAction = False
@@ -65,6 +74,11 @@ def enemyAttackAction() :
                         else:
                             heal_amount = bandit.max_hp - bandit.hp
                         bandit.hp += heal_amount
+
+                        # Text appears
+                        damage_text = DamageText(bandit.rect.centerx, bandit.rect.y, str(heal_amount), colors['green']['opaque'])
+                        damage_text_group.add(damage_text)
+
                     else :
                         # Attack
                         bandit.attack(knight)

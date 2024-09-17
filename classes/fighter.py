@@ -3,7 +3,10 @@
 import pygame
 import random
 from settings.settings import screen
-from settings.images import sword_img
+from settings.colors import colors
+
+from classes.damagetext import DamageText, damage_text_group
+
 class Fighter() :
 
     # Constructor
@@ -117,8 +120,11 @@ class Fighter() :
             target.alive = False
             target.action = 3 # DEATH
 
+        # Text appears
+        damage_text = DamageText(target.rect.centerx, target.rect.y, str(damage), colors['red']['opaque'])
+        damage_text_group.add(damage_text)
+
         self.action = 1 # ATTACK
-        # target.action = 2 # HURT
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
 
