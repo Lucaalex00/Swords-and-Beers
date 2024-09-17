@@ -26,10 +26,15 @@ pygame.init()
 font_TNR = pygame.font.SysFont('Times New Roman', 26)
 font_potion = pygame.font.SysFont('Sans Serif', 18)
 
-# Def draw health/mana bar
-def draw_text_bars(text, font, text_color, x, y):
-    img = font.render(text, True, text_color)
-    screen.blit(img, (x, y))
+def draw_text_bars(text1, text2, text3, font, text_color, x1, x2, x3, y):
+    img1 = font.render(text1, True, text_color)
+    img2 = font.render(text2, True, text_color)
+    img3 = font.render(text3, True, text_color)
+    
+    screen.blit(img1, (x1, y))
+    screen.blit(img2, (x2, y))
+    screen.blit(img3, (x3, y))
+
 
 # Def draw background
 def draw_bg():
@@ -40,17 +45,28 @@ def draw_panel():
     # Draw Rectangle area
     screen.blit(panel_img, (0, screen_height - controls_panel))
     
-    # Show info (STATS TITLES)
-    draw_text_bars(f'NAME |  HP  | MANA' , font_TNR, colors['black'], 100, screen_height - controls_panel + 10)
-    draw_text_bars(f'NAME |  HP  | MANA' , font_TNR, colors['black'], 550, screen_height - controls_panel + 10)
+    # Definisci le posizioni delle colonne
+    name_col1 = 160
+    hp_col1 = 270
+    mana_col1 = 340
 
-    # Show Name & Hp / Mana (PC).
-    draw_text_bars(f'{knight.name}     {knight.hp}       {knight.mana}', font_TNR, colors['gray']['opaque'], 100, screen_height - controls_panel + 40)
+    name_col2 = 610
+    hp_col2 = 730
+    mana_col2 = 795
 
-    # Cycle bandit_list
-    for distance, i in enumerate(bandit_list):
-        # Show Name & Hp / Mana (ENEMIES).
-        draw_text_bars(f'{i.name}      {i.hp}        {i.mana}', font_TNR, colors['gray']['opaque'], 550, (screen_height - controls_panel) + 40 + distance * 50)
+    # Intestazioni con posizioni fisse
+    draw_text_bars('NAME', 'HP', 'MANA', font_TNR, colors['black'], name_col1, hp_col1, mana_col1, screen_height - controls_panel + 10)
+    draw_text_bars('NAME', 'HP', 'MANA', font_TNR, colors['black'], name_col2, hp_col2, mana_col2, screen_height - controls_panel + 10)
+
+    # Mostra Nome, HP e Mana per il giocatore
+    draw_text_bars(f'{knight.name:>5}', f'{knight.hp:>2}', f'{knight.mana:>5}', font_TNR, colors['gray']['opaque'], name_col1 + 2, hp_col1 + 2, mana_col1 + 5, screen_height - controls_panel + 40)
+
+    # Cicla attraverso i banditi
+    for distance, bandit in enumerate(bandit_list):
+        # Calcola la posizione Y per ciascun bandito
+        y_offset = (screen_height - controls_panel) + 40 + distance * 50
+        draw_text_bars(f'{bandit.name:>5}', f'{bandit.hp:>2}', f'{bandit.mana:>6}', font_TNR, colors['gray']['opaque'], name_col2, hp_col2, mana_col2, y_offset)
+
 
 # Main game Loop
 run = True

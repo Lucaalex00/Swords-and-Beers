@@ -21,17 +21,17 @@ class ManaBar():
         ratio = self.mana / self.max_mana
 
         # BELOW BAR
-        pygame.draw.rect(screen, colors['blue']['light'], (self.x, self.y, 80, 20))
+        pygame.draw.rect(screen, colors['blue']['light'], (self.x, self.y, 90, 15))
 
         # ABOVE BAR
-        pygame.draw.rect(screen, colors['blue']['dark'], (self.x, self.y, 80 * ratio, 20))
+        pygame.draw.rect(screen, colors['blue']['dark'], (self.x, self.y, 90 * ratio, 15))
 
 # Generate Bars
-knight_mana_bar = ManaBar(260, screen_height - controls_panel + 70, knight.mana, knight.max_mana)
+knight_mana_bar = ManaBar(335, screen_height - controls_panel + 70, knight.mana, knight.max_mana)
 
-bandit1_mana_bar = ManaBar(710, screen_height - controls_panel + 70, bandit1.mana, bandit1.max_mana)
+bandit1_mana_bar = ManaBar(785, screen_height - controls_panel + 70, bandit1.mana, bandit1.max_mana)
 
-bandit2_mana_bar = ManaBar(710, screen_height - controls_panel + 120, bandit2.mana, bandit2.max_mana)
+bandit2_mana_bar = ManaBar(785, screen_height - controls_panel + 120, bandit2.mana, bandit2.max_mana)
 
 
 
