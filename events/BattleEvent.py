@@ -1,5 +1,6 @@
 # BattleEvent.py
 
+import random
 from settings.settings import screen
 from settings.colors import colors
 
@@ -39,13 +40,13 @@ def playerAttackAction():
                         current_fighter += 1
                         action_cooldown = 0
                         if knight.max_hp - knight.hp > global_var.potionEffect:
-                            heal_amount = global_var.potionEffect
+                            heal_amount = global_var.potionEffect + random.randint(0, 15) 
                         else:
                             heal_amount = knight.max_hp - knight.hp
                         knight.hp += heal_amount
                         knight.potions -= 1
 
-                        # Text appears
+                        # Text appears while Healing
                         damage_text = DamageText(knight.rect.centerx, knight.rect.y, str(heal_amount), colors['green']['opaque'])
                         damage_text_group.add(damage_text)
                         
@@ -75,7 +76,7 @@ def enemyAttackAction() :
                             heal_amount = bandit.max_hp - bandit.hp
                         bandit.hp += heal_amount
 
-                        # Text appears
+                        # Text appears while Healing
                         damage_text = DamageText(bandit.rect.centerx, bandit.rect.y, str(heal_amount), colors['green']['opaque'])
                         damage_text_group.add(damage_text)
 

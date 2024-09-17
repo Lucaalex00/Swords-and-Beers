@@ -85,56 +85,68 @@ class Fighter() :
             self.update_time = pygame.time.get_ticks()
             self.frame_index+= 1
 
-        # Repeat animation if has run out then reset to the start
         if self.frame_index >= len(self.animation_list[self.action]):
-            self.idle()
-
+        # Check died and keep last frame 
+            if self.action == 3:  # DEATH
+                self.frame_index = len(self.animation_list[self.action]) - 1 
+        # Or keep idle animation
+            else:
+                self.idle() 
+            
     def idle(self) : 
         self.action = 0 # IDLE
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
 
-    """  
     def hurt(self) :
         self.action = 2 # HURT
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks() 
-    """
+
+    def died(self) :
+        self.action = 3 # DEATH
+        self.frame_index = 0
+        self.update_time = pygame.time.get_ticks() 
 
     # Attack Function
     def attack(self, target):
+
     # Deal damage to target
 
-        # DMG Range
-        randRange = random.randint(-5, 5)
-        
-        # Add randRange with self.strength
-        damage = self.strength + randRange
+        if target.alive and self.alive:
 
-        # Remove target.hp with damage output
-        target.hp -= damage
+            # DMG Range
+            randRange = random.randint(-5, 5)
+        
+            # Add randRange with self.strength
+            damage = self.strength + randRange
+            
+            # Remove target.hp with damage output
+            target.hp -= damage
+
+            # Text appears while Attacking
+            damage_text = DamageText(target.rect.centerx, target.rect.y, str(damage), colors['red']['opaque'])
+            damage_text_group.add(damage_text)
+
+            self.action = 1 # ATTACK
+            target.hurt()
 
         # Check if target has DIED
         if target.hp < 1:
             target.hp = 0
             target.alive = False
-            target.action = 3 # DEATH
+            target.died()
 
-        # Text appears
-        damage_text = DamageText(target.rect.centerx, target.rect.y, str(damage), colors['red']['opaque'])
-        damage_text_group.add(damage_text)
-
-        self.action = 1 # ATTACK
-        self.frame_index = 0
-        self.update_time = pygame.time.get_ticks()
+            self.frame_index = 0
+            self.update_time = pygame.time.get_ticks()
 
 
 # Playable Characters
-knight = Fighter(250, 400,'Knight', 30, 10, 10, 3)
+knight = Fighter(250, 400,'Knight', 50, 10, 13, 3)
 
 # Enemies
-bandit1 = Fighter(850, 400, 'Bandit', 15, 5, 6, 1)
-bandit2 = Fighter(700, 420, 'Bandit', 15, 5, 6, 1)
+bandit1 = Fighter(850, 400, 'Bandit', 25, 5, 8, 1)
+bandit2 = Fighter(700, 420, 'Bandit', 25, 5, 8, 1)
 
 # ADD to list
 bandit_list = []

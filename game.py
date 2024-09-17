@@ -55,6 +55,7 @@ def draw_panel():
 # Main game Loop
 run = True
 while run:
+
     # Set FPS (60)
     clock.tick(fps)
 
@@ -80,34 +81,59 @@ while run:
         bandit.draw()
         bandit.update()
 
-    # Events Management
+    # Fight Event Managements #
 
-    # Fight Event Management
     # Player Turn
     playerAttackAction()
+
     # Enemies Turn
     enemyAttackAction()
+
     # Reset Fight
     resetAttackActions()
 
-    # Reset Action Variables
+    # Reset Action Variables #
+
     # Make sure mouse is visible
     pygame.mouse.set_visible(True)
+
     # Keep mouse Position
     pos = pygame.mouse.get_pos()
+
+   # ATTACK INIT & SET ENEMY CLICKED
+    # Set initial cursor visibility
+    pygame.mouse.set_visible(True)
+    sword_visible = False  # Flag to track sword visibility
 
     # ATTACK INIT & SET ENEMY CLICKED
     for count, bandit in enumerate(bandit_list):
         # bandit area & mouse cursor collides
         if bandit.rect.collidepoint(pos):
-            # Hide Cursor and Show Sword
-            pygame.mouse.set_visible(False)
-            screen.blit(sword_img, pos)
-            # Check if mouse is clicked
-            if global_var.clicked:  
-                global_var.attackAction = True  # AttackAction = True
-                global_var.target = bandit_list[count]  # Target = Clicked enemy
-                global_var.clicked = False  # RESET
+            if bandit.alive:
+                # Show the sword if the cursor is over a live enemy
+                if not sword_visible:
+                    pygame.mouse.set_visible(False)
+                    screen.blit(sword_img, pos)
+                    sword_visible = True  # Set flag to indicate sword is visible
+                # Check if mouse is clicked and click position matches current position
+                if global_var.clicked and global_var.click_position == pos:
+                    global_var.attackAction = True  # AttackAction = True
+                    global_var.target = bandit_list[count]  # Target = Clicked enemy
+                    global_var.clicked = False  # RESET
+                    global_var.click_position = None  # Reset click position after attack
+                    break  # Exit loop after handling the click to prevent multiple processing
+            else:
+                # Hide sword if the enemy is no longer alive
+                if sword_visible:
+                    pygame.mouse.set_visible(True)
+                    sword_visible = False  # Reset sword visibility flag
+
+    # Reset sword visibility if no enemy is under the cursor
+    if not any(bandit.rect.collidepoint(pos) for bandit in bandit_list):
+        if sword_visible:
+            pygame.mouse.set_visible(True)
+            sword_visible = False
+
 
     # Draw Potion Button
     if potion_button.draw(screen):
@@ -128,19 +154,23 @@ while run:
     for event in pygame.event.get():
         # QUIT EVENT
         if event.type == pygame.QUIT:
+
             # When user click "X", show ExitEvent Display
             user_choice = confirmation_screen()
             if user_choice == "close":
                 run = False
         elif event.type == pygame.KEYDOWN:
+
             # When user press "ESC", Show ExitEvent Display
             if event.key == pygame.K_ESCAPE:
                 user_choice = confirmation_screen()
                 if user_choice == "close":
                     run = False
+
         # CLICK EVENT
         if event.type == pygame.MOUSEBUTTONDOWN:
             global_var.clicked = True
+            global_var.click_position = pygame.mouse.get_pos()  # Save click position
 
     # Display Update
     pygame.display.update()
