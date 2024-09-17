@@ -127,8 +127,8 @@ class Fighter() :
 knight = Fighter(250, 400,'Knight', 30, 10, 10, 3)
 
 # Enemies
-bandit1 = Fighter(850, 400, 'Bandit', 10, 5, 6, 1)
-bandit2 = Fighter(700, 420, 'Bandit', 10, 5, 6, 1)
+bandit1 = Fighter(850, 400, 'Bandit', 15, 5, 6, 1)
+bandit2 = Fighter(700, 420, 'Bandit', 15, 5, 6, 1)
 
 # ADD to list
 bandit_list = []

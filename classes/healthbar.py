@@ -24,6 +24,7 @@ class HealthBar():
         # ABOVE BAR
         pygame.draw.rect(screen, colors['green']['dark'], (self.x, self.y, 150 * ratio, 20))
 
+
 # Generate Bars
 knight_health_bar = HealthBar(100, screen_height - controls_panel + 70, knight.hp, knight.max_hp)
 

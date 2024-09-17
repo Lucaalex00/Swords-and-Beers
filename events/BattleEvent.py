@@ -1,7 +1,6 @@
 # BattleEvent.py
 
-import pygame
-from classes.fighter import knight,bandit1,bandit2,bandit_list
+from classes.fighter import knight,bandit_list
 
 # GLOBAL VAR #
 import global_var
@@ -13,11 +12,6 @@ total_fighters = 3
 action_cooldown = 0
 action_wait_time = 90
 
-# Controls 
-attackControl = False
-potionControl = False
-clicked = False
-
 # Player action
 def playerAttackAction():
     global current_fighter, action_cooldown
@@ -28,12 +22,28 @@ def playerAttackAction():
 
             if action_cooldown >= action_wait_time:
 
+                # Attack
                 if global_var.attackAction and global_var.target is not None:
                     knight.attack(global_var.target)
                     global_var.attackAction = False  #RESET
                     global_var.target = None  # RESET
                     current_fighter += 1
-                    action_cooldown = 0      
+                    action_cooldown = 0  
+                # Potion
+                if global_var.potionAction: 
+                    if knight.potions > 0:
+                        knight.potions -= 1
+                        current_fighter += 1
+                        action_cooldown = 0
+                        if knight.max_hp - knight.hp > global_var.potionEffect:
+                            heal_amount = global_var.potionEffect
+                        else:
+                            heal_amount = knight.max_hp - knight.hp
+                        knight.hp += heal_amount
+                    else:
+                        knight.potions = 0
+                global_var.potionAction = False
+
 
 # Enemy action
 def enemyAttackAction() :
@@ -45,10 +55,21 @@ def enemyAttackAction() :
             if bandit.alive :
                 action_cooldown += 1
                 if action_cooldown >= action_wait_time :
-                    # Attack
-                    bandit.attack(knight)
-                    current_fighter += 1
-                    action_cooldown= 0
+                    # Check if need to Heal
+                    if knight.strength  > bandit.hp and bandit.potions > 0 :
+                        bandit.potions -= 1
+                        current_fighter += 1
+                        action_cooldown = 0
+                        if bandit.max_hp - bandit.hp > global_var.potionEffect:
+                            heal_amount = global_var.potionEffect
+                        else:
+                            heal_amount = bandit.max_hp - bandit.hp
+                        bandit.hp += heal_amount
+                    else :
+                        # Attack
+                        bandit.attack(knight)
+                        current_fighter += 1
+                        action_cooldown= 0
             else:
                 current_fighter += 1
 

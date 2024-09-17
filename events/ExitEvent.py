@@ -9,10 +9,10 @@ from settings.settings import screen_width, screen_height, screen
 pygame.font.init()
 pygame.display.init()
 
-# Font per il testo
+# Font
 font = pygame.font.Font(None, 36)
 
-# Funzione per disegnare il testo
+# Def draw_text
 def draw_text(text, font, color, surface, x, y):
     textobj = font.render(text, True, color)
     textrect = textobj.get_rect()

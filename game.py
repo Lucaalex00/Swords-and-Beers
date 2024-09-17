@@ -1,28 +1,21 @@
-# game.py (MAIN)
-
-# IMPORTS #
 import pygame
 import sys
-
-# GLOBAL VAR #
 import global_var 
 
-# SETTINGS #
 from settings.settings import screen, screen_height, screen_width, controls_panel
 from settings.colors import colors
 from settings.images import background_img, panel_img, sword_img
 
-# CLASSES #
-from classes.fighter import knight,bandit_list,bandit1,bandit2
+from classes.fighter import knight, bandit_list, bandit1, bandit2
 from classes.healthbar import knight_health_bar, bandit1_health_bar, bandit2_health_bar
 from classes.manabar import knight_mana_bar, bandit1_mana_bar, bandit2_mana_bar
+from classes.potionbutton import potion_button, button_clicked
 
-# EVENTS #
-from events.ExitEvent import confirmation_screen
-from events.BattleEvent import playerAttackAction, enemyAttackAction,resetAttackActions
+from events.ExitEvent import confirmation_screen, draw_text
+from events.BattleEvent import playerAttackAction, enemyAttackAction, resetAttackActions
 
 # FRAME RATE SET
-clock= pygame.time.Clock()
+clock = pygame.time.Clock()
 fps = 60
 
 # Init Pygame
@@ -30,6 +23,7 @@ pygame.init()
 
 # Fonts
 font_TNR = pygame.font.SysFont('Times New Roman', 26)
+font_potion = pygame.font.SysFont('Sans Serif', 18)
 
 # Def draw health/mana bar
 def draw_text_bars(text, font, text_color, x, y):
@@ -57,11 +51,9 @@ def draw_panel():
         # Show Name & Hp / Mana (ENEMIES).
         draw_text_bars(f'{i.name}      {i.hp}        {i.mana}', font_TNR, colors['gray']['opaque'], 550, (screen_height - controls_panel) + 40 + distance * 50)
 
-
 # Main game Loop
 run = True
 while run:
-
     # Set FPS (60)
     clock.tick(fps)
 
@@ -83,66 +75,64 @@ while run:
     knight.draw()
 
     # Draw Enemies  
-    for bandit in bandit_list :
+    for bandit in bandit_list:
         bandit.draw()
         bandit.update()
 
     # Events Management
 
     # Fight Event Management
-
-        # Player Turn
-        playerAttackAction()
-
-        # Enemies Turn
-        enemyAttackAction()
-        
-        # Reset Fight
-        resetAttackActions()
+    # Player Turn
+    playerAttackAction()
+    # Enemies Turn
+    enemyAttackAction()
+    # Reset Fight
+    resetAttackActions()
 
     # Reset Action Variables
-        
-        # Make sure mouse is visible
-        pygame.mouse.set_visible(True)
+    # Make sure mouse is visible
+    pygame.mouse.set_visible(True)
+    # Keep mouse Position
+    pos = pygame.mouse.get_pos()
 
-        # Keep mouse Position
-        pos = pygame.mouse.get_pos()
-
-        # ATTACK INIT & SET ENEMY CLICKED
+    # ATTACK INIT & SET ENEMY CLICKED
     for count, bandit in enumerate(bandit_list):
-
         # bandit area & mouse cursor collides
         if bandit.rect.collidepoint(pos):
-
             # Hide Cursor and Show Sword
             pygame.mouse.set_visible(False)
             screen.blit(sword_img, pos)
-
             # Check if mouse is clicked
             if global_var.clicked:  
                 global_var.attackAction = True  # AttackAction = True
-
                 global_var.target = bandit_list[count]  # Target = Clicked enemy
-
                 global_var.clicked = False  # RESET
 
-    for event in pygame.event.get():
+    # Draw Potion Button
+    if potion_button.draw(screen):
+        if not button_clicked:  # Only perform action if button was not clicked recently
+            global_var.potionAction = True
+            button_clicked = True  # Set flag to prevent repeated action
 
+            # Show potions numbers
+
+    else:
+        draw_text(str(knight.potions), font_potion, colors['red']['dark'], screen, 80, screen_height - controls_panel + 25)
+        button_clicked = False  # Reset flag when button is not clicked
+
+    for event in pygame.event.get():
         # QUIT EVENT
         if event.type == pygame.QUIT:
-
             # When user click "X", show ExitEvent Display
             user_choice = confirmation_screen()
             if user_choice == "close":
                 run = False
-
         elif event.type == pygame.KEYDOWN:
             # When user press "ESC", Show ExitEvent Display
             if event.key == pygame.K_ESCAPE:
                 user_choice = confirmation_screen()
                 if user_choice == "close":
                     run = False
-        
         # CLICK EVENT
         if event.type == pygame.MOUSEBUTTONDOWN:
             global_var.clicked = True

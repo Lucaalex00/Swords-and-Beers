@@ -14,3 +14,7 @@ panel_img = pygame.transform.scale(panel_img, (screen_width, controls_panel))
 
 # SWORD CURSOR
 sword_img = pygame.image.load("./storage/icons/sword.png").convert_alpha()
+
+# POTION BUTTON
+potion_img = pygame.image.load("./storage/icons/potion.png").convert_alpha()
+
