@@ -9,7 +9,6 @@ import global_var
 def GameOverCheck():
     if not knight.alive:  # If the knight is dead, the game is over
         global_var.game_over = -1  # LOSE
-        print('YOU LOSE')
 
 # Check if all bandits are dead.
 def WinCheck():
@@ -25,7 +24,6 @@ def WinCheck():
     # If no bandits are alive, the player wins
     if global_var.alive_bandits == 0:
         global_var.game_over = 1  # WIN
-        print('YOU WIN')
 
 
         

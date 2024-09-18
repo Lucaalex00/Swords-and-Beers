@@ -142,11 +142,11 @@ class Fighter() :
 
 
 # Playable Characters
-knight = Fighter(250, 400,'Knight', 1, 10, 13, 3)
+knight = Fighter(250, 400,'Knight', 50, 10, 13, 3)
 
 # Enemies
-bandit1 = Fighter(850, 400, 'Bandit', 15, 5, 8, 1)
-bandit2 = Fighter(700, 420, 'Bandit', 15, 5, 8, 1)
+bandit1 = Fighter(850, 400, 'Bandit', 5, 5, 8, 1)
+bandit2 = Fighter(700, 420, 'Bandit', 5, 5, 8, 1)
 
 # ADD to list
 bandit_list = []
