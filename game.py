@@ -13,7 +13,7 @@ from classes.potionbutton import potion_button, button_clicked
 from classes.damagetext import damage_text_group
 
 from events.ExitEvent import confirmation_screen, draw_text
-from events.BattleEvent import playerAttackAction, enemyAttackAction, resetAttackActions
+from events.BattleEvent import playerAttackAction, enemyAttackAction, resetAttackActions, checkGameState
 
 # FRAME RATE SET
 clock = pygame.time.Clock()
@@ -26,26 +26,17 @@ pygame.init()
 font_TNR = pygame.font.SysFont('Times New Roman', 26)
 font_potion = pygame.font.SysFont('Sans Serif', 18)
 
-def draw_text_bars(text1, text2, text3, font, text_color, x1, x2, x3, y):
-    img1 = font.render(text1, True, text_color)
-    img2 = font.render(text2, True, text_color)
-    img3 = font.render(text3, True, text_color)
-    
-    screen.blit(img1, (x1, y))
-    screen.blit(img2, (x2, y))
-    screen.blit(img3, (x3, y))
-
-
 # Def draw background
 def draw_bg():
     screen.blit(background_img, (0, 0))
 
 # Def draw controls panel
 def draw_panel():
+
     # Draw Rectangle area
     screen.blit(panel_img, (0, screen_height - controls_panel))
     
-    # Definisci le posizioni delle colonne
+    # Def columns position
     name_col1 = 160
     hp_col1 = 270
     mana_col1 = 340
@@ -54,19 +45,30 @@ def draw_panel():
     hp_col2 = 730
     mana_col2 = 795
 
-    # Intestazioni con posizioni fisse
+    # Draw text in columns position
     draw_text_bars('NAME', 'HP', 'MANA', font_TNR, colors['black'], name_col1, hp_col1, mana_col1, screen_height - controls_panel + 10)
     draw_text_bars('NAME', 'HP', 'MANA', font_TNR, colors['black'], name_col2, hp_col2, mana_col2, screen_height - controls_panel + 10)
 
-    # Mostra Nome, HP e Mana per il giocatore
+    # Show NAME, HP, MANA -> KNIGHT
     draw_text_bars(f'{knight.name:>5}', f'{knight.hp:>2}', f'{knight.mana:>5}', font_TNR, colors['gray']['opaque'], name_col1 + 2, hp_col1 + 2, mana_col1 + 5, screen_height - controls_panel + 40)
 
-    # Cicla attraverso i banditi
+    # FOR Cycle in bandit_list
     for distance, bandit in enumerate(bandit_list):
-        # Calcola la posizione Y per ciascun bandito
+        # Calc Y spacing for every bandit
         y_offset = (screen_height - controls_panel) + 40 + distance * 50
+
+        # Show NAME, HP, MANA -> BANDIT
         draw_text_bars(f'{bandit.name:>5}', f'{bandit.hp:>2}', f'{bandit.mana:>6}', font_TNR, colors['gray']['opaque'], name_col2, hp_col2, mana_col2, y_offset)
 
+# Def draw text bars (STATS) in controls panel
+def draw_text_bars(text1, text2, text3, font, text_color, x1, x2, x3, y):
+    img1 = font.render(text1, True, text_color)
+    img2 = font.render(text2, True, text_color)
+    img3 = font.render(text3, True, text_color)
+    
+    screen.blit(img1, (x1, y))
+    screen.blit(img2, (x2, y))
+    screen.blit(img3, (x3, y))
 
 # Main game Loop
 run = True
@@ -97,6 +99,22 @@ while run:
         bandit.draw()
         bandit.update()
 
+     # Draw Potion Button
+    if potion_button.draw(screen):
+        if not button_clicked:  # Only perform action if button was not clicked recently
+            global_var.potionAction = True
+            button_clicked = True  # Set flag to prevent repeated action
+
+
+    else:
+        # Show potions numbers
+        draw_text(str(knight.potions), font_potion, colors['red']['dark'], screen, 80, screen_height - controls_panel + 25)
+        button_clicked = False  # Reset flag when button is not clicked
+
+    # Draw Damage Text
+    damage_text_group.update()
+    damage_text_group.draw(screen)
+
     # Fight Event Managements #
 
     # Player Turn
@@ -105,6 +123,9 @@ while run:
     # Enemies Turn
     enemyAttackAction()
 
+    # Check game state
+    run = checkGameState()
+    
     # Reset Fight
     resetAttackActions()
 
@@ -131,6 +152,7 @@ while run:
                     pygame.mouse.set_visible(False)
                     screen.blit(sword_img, pos)
                     sword_visible = True  # Set flag to indicate sword is visible
+
                 # Check if mouse is clicked and click position matches current position
                 if global_var.clicked and global_var.click_position == pos:
                     global_var.attackAction = True  # AttackAction = True
@@ -149,23 +171,6 @@ while run:
         if sword_visible:
             pygame.mouse.set_visible(True)
             sword_visible = False
-
-
-    # Draw Potion Button
-    if potion_button.draw(screen):
-        if not button_clicked:  # Only perform action if button was not clicked recently
-            global_var.potionAction = True
-            button_clicked = True  # Set flag to prevent repeated action
-
-            # Show potions numbers
-
-    else:
-        draw_text(str(knight.potions), font_potion, colors['red']['dark'], screen, 80, screen_height - controls_panel + 25)
-        button_clicked = False  # Reset flag when button is not clicked
-
-    # Draw Damage Text
-    damage_text_group.update()
-    damage_text_group.draw(screen)
 
     for event in pygame.event.get():
         # QUIT EVENT

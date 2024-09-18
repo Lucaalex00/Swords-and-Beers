@@ -53,7 +53,7 @@ class Fighter() :
 
         # Death Animations
         temp_list = []
-        for i in range(8) :
+        for i in range(10) :
             img = pygame.image.load(f'classes/sprites/{self.name}/Death/{i}.png')
             img = pygame.transform.scale(img, (img.get_width()* 3, img.get_height()* 3))
             temp_list.append(img)
@@ -142,11 +142,11 @@ class Fighter() :
 
 
 # Playable Characters
-knight = Fighter(250, 400,'Knight', 50, 10, 13, 3)
+knight = Fighter(250, 400,'Knight', 1, 10, 13, 3)
 
 # Enemies
-bandit1 = Fighter(850, 400, 'Bandit', 25, 5, 8, 1)
-bandit2 = Fighter(700, 420, 'Bandit', 25, 5, 8, 1)
+bandit1 = Fighter(850, 400, 'Bandit', 15, 5, 8, 1)
+bandit2 = Fighter(700, 420, 'Bandit', 15, 5, 8, 1)
 
 # ADD to list
 bandit_list = []
