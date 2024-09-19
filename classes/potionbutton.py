@@ -17,10 +17,10 @@ class PotionButton:
         return False
 
 # Potion Button Settings
-button_width = 52
-button_height = 52
-button_x = 70
-button_y = screen_height - button_height - 85
+button_width = 64
+button_height = 64
+button_x = 65
+button_y = screen_height - button_height - 80
 
 # Create Potion Button
 potion_button = PotionButton(button_x, button_y, potion_img, button_width, button_height)

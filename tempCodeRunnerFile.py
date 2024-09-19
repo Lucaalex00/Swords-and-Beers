@@ -1,2 +1,1 @@
-# Make sure mouse is visible
-        pygame.mouse.set_visible(True)
+    if potion_button.draw(screen):

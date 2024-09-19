@@ -5,13 +5,14 @@ import global_var
 from settings.settings import screen, screen_height, controls_panel
 from settings.colors import colors
 from settings.images import background_img, panel_img, sword_img
+from settings.fonts import font_TNR, font_potion
 
 from classes.fighter import knight, bandit_list, bandit1, bandit2
 from classes.healthbar import knight_health_bar, bandit1_health_bar, bandit2_health_bar
 from classes.manabar import knight_mana_bar, bandit1_mana_bar, bandit2_mana_bar
 from classes.potionbutton import potion_button, button_clicked
 from classes.damagetext import damage_text_group
-
+from classes.skillmenu import SkillMenu
 from events.ExitEvent import confirmation_screen, draw_text
 from events.BattleEvent import playerAttackAction, enemyAttackAction, resetAttackActions, checkGameState
 from events.EndGameEvent import draw_new_game_button, start_new_game, check_new_game_button_click
@@ -20,13 +21,9 @@ from events.EndGameEvent import draw_new_game_button, start_new_game, check_new_
 clock = pygame.time.Clock()
 fps = 60
 
-# Init Pygame
+# Init
 pygame.init()
-
-# Fonts
-font_TNR = pygame.font.SysFont('Times New Roman', 26)
-font_potion = pygame.font.SysFont('Sans Serif', 18)
-
+skill_menu = SkillMenu()
 
 # Def draw background
 def draw_bg():
@@ -117,89 +114,66 @@ while run:
     damage_text_group.update()
     damage_text_group.draw(screen)
 
+    # Draw Skill Button
+    skill_menu.draw_skill_button()
+    
+    # SKILL MENU EVENTS
+    for event in pygame.event.get():
+        # QUIT EVENT
+        if event.type == pygame.QUIT:
+            user_choice = confirmation_screen()
+            if user_choice == "close":
+                run = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                user_choice = confirmation_screen()
+                if user_choice == "close":
+                    run = False
+        # CLICK EVENT
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            global_var.clicked = True
+            global_var.click_position = pygame.mouse.get_pos()  # Save click position
+        
+        # Handle skill menu events
+        skill_menu.handle_skill_events(event)
+
     if global_var.game_over == 0:
         # Fight Event Managements #
-
-        # Player Turn
         playerAttackAction()
-
-        # Enemies Turn
         enemyAttackAction()
-
-        # Check game state
         run = checkGameState()
-        
-        # Reset Fight
         resetAttackActions()
-
-        # Reset Action Variables #
-
-        # Make sure mouse is visible
         pygame.mouse.set_visible(True)
-
-        # Keep mouse Position
         pos = pygame.mouse.get_pos()
 
-    # ATTACK INIT & SET ENEMY CLICKED
-        # Set initial cursor visibility
-        pygame.mouse.set_visible(True)
+        # ATTACK INIT & SET ENEMY CLICKED
         sword_visible = False  # Flag to track sword visibility
 
-        # ATTACK INIT & SET ENEMY CLICKED
         for count, bandit in enumerate(bandit_list):
-            # bandit area & mouse cursor collides
             if bandit.rect.collidepoint(pos):
                 if bandit.alive:
-                    # Show the sword if the cursor is over a live enemy
                     if not sword_visible:
                         pygame.mouse.set_visible(False)
                         screen.blit(sword_img, pos)
-                        sword_visible = True  # Set flag to indicate sword is visible
-
-                    # Check if mouse is clicked and click position matches current position
+                        sword_visible = True
                     if global_var.clicked and global_var.click_position == pos:
-                        global_var.attackAction = True  # AttackAction = True
-                        global_var.target = bandit_list[count]  # Target = Clicked enemy
-                        global_var.clicked = False  # RESET
-                        global_var.click_position = None  # Reset click position after attack
-                        break  # Exit loop after handling the click to prevent multiple processing
+                        global_var.attackAction = True
+                        global_var.target = bandit_list[count]
+                        global_var.clicked = False
+                        global_var.click_position = None
+                        break
                 else:
-                    # Hide sword if the enemy is no longer alive
                     if sword_visible:
                         pygame.mouse.set_visible(True)
-                        sword_visible = False  # Reset sword visibility flag
-
-        # Reset sword visibility if no enemy is under the cursor
+                        sword_visible = False
         if not any(bandit.rect.collidepoint(pos) for bandit in bandit_list):
             if sword_visible:
                 pygame.mouse.set_visible(True)
                 sword_visible = False
 
-        for event in pygame.event.get():
-            # QUIT EVENT
-            if event.type == pygame.QUIT:
-
-                # When user click "X", show ExitEvent Display
-                user_choice = confirmation_screen()
-                if user_choice == "close":
-                    run = False
-            elif event.type == pygame.KEYDOWN:
-
-                # When user press "ESC", Show ExitEvent Display
-                if event.key == pygame.K_ESCAPE:
-                    user_choice = confirmation_screen()
-                    if user_choice == "close":
-                        run = False
-
-            # CLICK EVENT
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                global_var.clicked = True
-                global_var.click_position = pygame.mouse.get_pos()  # Save click position
     else:
-        # Display Victory or Defeat
-        checkGameState()  # This function now also handles drawing victory/defeat screen
-
-        draw_new_game_button()  # Draw the new game button
+        checkGameState()
+        draw_new_game_button()
 
         # QUIT EVENT
         for event in pygame.event.get():
@@ -208,16 +182,20 @@ while run:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     run = False
-
-         # CLICK EVENT
+            # SKILL MENU EVENTS
+            skill_menu.handle_skill_events(event)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if global_var.game_over != 0:
                     if check_new_game_button_click(pygame.mouse.get_pos()):
                         start_new_game()
-                        continue  # Skip the rest of the loop to avoid further processing
+                        continue
 
     # Display Update
     pygame.display.update()
+
+# Close Pygame
+pygame.quit()
+sys.exit()
 
 # Close Pygame
 pygame.quit()

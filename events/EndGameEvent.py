@@ -5,6 +5,7 @@ import pygame
 # SETTINGS #
 from settings.settings import screen,screen_height,screen_width
 from settings.colors import colors
+from settings.fonts import font_button
 
 # CLASSES # 
 from classes.fighter import bandit_list, knight
@@ -12,7 +13,6 @@ from classes.fighter import bandit_list, knight
 # GLOBAL VAR #
 import global_var
 
-font_button = pygame.font.SysFont('Sans Serif', 32)  # Font for the new game button
 
 # Check if the knight is dead.
 def GameOverCheck():
