@@ -21,6 +21,10 @@ class Fighter() :
         self.potions = potions
         self.alive = True
         self.action = 0 # 0: Idle - 1: Attack - 2: Hurt - 3: Dead 
+
+        # POSITIONING
+        self.start_x = x
+        self.start_y = y
         
         # Animation & Frame Rate
         self.animation_list = []
@@ -75,7 +79,7 @@ class Fighter() :
     def update(self):
 
         # Handle Animation
-        animation_cooldown = 100
+        animation_cooldown = 100 # ms
         
         # Update Image
         self.image = self.animation_list[self.action][self.frame_index]
@@ -83,7 +87,7 @@ class Fighter() :
         # Check if enough time has passed since the last update
         if pygame.time.get_ticks() - self.update_time > animation_cooldown:
             self.update_time = pygame.time.get_ticks()
-            self.frame_index+= 1
+            self.frame_index += 1
 
         if self.frame_index >= len(self.animation_list[self.action]):
         # Check died and keep last frame 
@@ -92,7 +96,20 @@ class Fighter() :
         # Or keep idle animation
             else:
                 self.idle() 
-            
+    
+    # Reset Function
+    def reset(self):
+        self.hp = self.max_hp
+        self.mana = self.max_mana
+        self.potions = self.start_potions
+        self.alive = True
+        self.action = 0  # IDLE
+        self.frame_index = 0
+        self.update_time = pygame.time.get_ticks()
+
+        # Reset the position
+        self.rect.center = (self.start_x, self.start_y)
+
     def idle(self) : 
         self.action = 0 # IDLE
         self.frame_index = 0
@@ -142,7 +159,7 @@ class Fighter() :
 
 
 # Playable Characters
-knight = Fighter(250, 400,'Knight', 50, 10, 13, 3)
+knight = Fighter(250, 400,'Knight', 12, 10, 13, 3)
 
 # Enemies
 bandit1 = Fighter(850, 400, 'Bandit', 5, 5, 8, 1)

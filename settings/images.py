@@ -25,3 +25,4 @@ victory_img = pygame.image.load("./storage/icons/victory.png").convert_alpha()
 # DEFEAT DISPLAY
 
 defeat_img = pygame.image.load("./storage/icons/defeat.png").convert_alpha()
+

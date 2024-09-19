@@ -38,33 +38,37 @@ def draw_button(text, x, y, w, h, color, hover_color, action=None):
 # Funzione per la schermata di conferma
 def confirmation_screen():
     start_time = time.time() + 1
+
+    # Make sure mouse is visible
+    pygame.mouse.set_visible(True)
+    
     while True:
         # Creare una superficie con canale alfa per lo sfondo trasparente
         overlay = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 180))  # Nero con trasparenza (valore alfa: 180)
+        overlay.fill((10, 0, 0, 180))  # Nero con trasparenza (valore alfa: 180)
 
-        # Riempire lo sfondo principale
-        screen.fill((0, 0, 0))  # Colore di base per lo sfondo
+        # Fill main screen
+        screen.fill((0, 0, 0))
 
-        # Disegnare l'overlay semitrasparente sopra lo sfondo
+        # Draw overlay with opacity above screen
         screen.blit(overlay, (0, 0))
 
-        # Tempo trascorso
+        # TIME
         elapsed_time = time.time() - start_time
-        remaining_time = 3 - elapsed_time  # Timer a 3 secondi
+        remaining_time = 3 - elapsed_time  # Timer 3 seconds
 
         if remaining_time <= 1:
             return "cancel"
 
-        # Disegna il testo di conferma e il timer
-        draw_text("Sei sicuro di voler uscire?", font, colors['white'], screen, screen_width // 2, screen_height // 4)
-        draw_text(f"Tempo rimasto: {int(remaining_time)}", font, colors['red']['dark'], screen, screen_width // 2, screen_height // 2 + 70)
+        # Draw Text & Timer
+        draw_text("Are you sure to leave?", font, colors['white'], screen, screen_width // 2, screen_height // 4)
+        draw_text(f"Remaining Time: {int(remaining_time)}", font, colors['red']['dark'], screen, screen_width // 2, screen_height // 2 + 70)
 
-        # Disegna i pulsanti "Chiudi" e "Annulla"
-        close_action = draw_button("Chiudi", screen_width // 2 - 150, screen_height // 2, 100, 50, colors['red']['dark'], (200, 0, 0), action="close")
-        cancel_action = draw_button("Annulla", screen_width // 2 + 50, screen_height // 2, 100, 50, colors['green']['dark'], (0, 200, 0), action="cancel")
+        # Draw Buttons "Close" and "Cancel"
+        close_action = draw_button("Leave", screen_width // 2 - 150, screen_height // 2, 100, 50, colors['red']['dark'], (200, 0, 0), action="close")
+        cancel_action = draw_button("Cancel", screen_width // 2 + 50, screen_height // 2, 100, 50, colors['green']['dark'], (0, 200, 0), action="cancel")
 
-        # Gestione degli eventi
+        # Events Management
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()

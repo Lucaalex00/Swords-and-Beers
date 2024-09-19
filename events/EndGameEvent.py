@@ -1,9 +1,18 @@
 # EndGameEvent.py
 
+import pygame
+
+# SETTINGS #
+from settings.settings import screen,screen_height,screen_width
+from settings.colors import colors
+
+# CLASSES # 
 from classes.fighter import bandit_list, knight
 
 # GLOBAL VAR #
 import global_var
+
+font_button = pygame.font.SysFont('Sans Serif', 32)  # Font for the new game button
 
 # Check if the knight is dead.
 def GameOverCheck():
@@ -26,4 +35,31 @@ def WinCheck():
         global_var.game_over = 1  # WIN
 
 
+#############################
+#### NEW GAME MANAGEMENT ####
+#############################
+
+def draw_new_game_button():
+    if global_var.game_over != 0:
+        button_text = font_button.render("New Game", True, colors['white'])
+        button_rect = button_text.get_rect(center=(screen_width // 2, screen_height // 2 + 70))
+        pygame.draw.rect(screen, colors['black'], button_rect.inflate(20, 20))  # Background rectangle
+        screen.blit(button_text, button_rect.topleft)
+
+def check_new_game_button_click(position):
+    button_rect = pygame.Rect((screen_width // 2 + 50) - 115, screen_height // 2 + 50, 130, 40)
+    return button_rect.collidepoint(position)
+
+def start_new_game():
+    # Reset delle variabili globali
+    global_var.game_over = 0
+    global_var.potionAction = False
+    global_var.attackAction = False
+    global_var.target = None
+
+    # Reset dei personaggi
+    knight.reset()
+
+    for bandit in bandit_list:
+        bandit.reset()
         

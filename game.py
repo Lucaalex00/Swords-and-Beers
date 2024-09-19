@@ -14,6 +14,7 @@ from classes.damagetext import damage_text_group
 
 from events.ExitEvent import confirmation_screen, draw_text
 from events.BattleEvent import playerAttackAction, enemyAttackAction, resetAttackActions, checkGameState
+from events.EndGameEvent import draw_new_game_button, start_new_game, check_new_game_button_click
 
 # FRAME RATE SET
 clock = pygame.time.Clock()
@@ -25,6 +26,7 @@ pygame.init()
 # Fonts
 font_TNR = pygame.font.SysFont('Times New Roman', 26)
 font_potion = pygame.font.SysFont('Sans Serif', 18)
+
 
 # Def draw background
 def draw_bg():
@@ -58,15 +60,6 @@ def draw_panel():
 
         # Show NAME, HP, MANA -> BANDIT
         draw_text_bars(f'{bandit.name:>5}', f'{bandit.hp:>2}', f'{bandit.mana:>6}', font_TNR, colors['gray']['opaque'], name_col2, hp_col2, mana_col2, y_offset)
-
-    # If game is over, overlay to block interactions
-    if global_var.game_over != 0:
-        overlay = pygame.Surface((screen.get_width(), screen.get_height()), pygame.SRCALPHA)
-        if global_var.game_over == 1:
-            overlay.fill((0, 100, 0, 128))  # Dark green overlay for victory
-        else:
-            overlay.fill((139, 0, 0, 128))  # Dark red overlay for defeat
-        screen.blit(overlay, (0, 0))
 
 # Def draw text bars (STATS) in controls panel
 def draw_text_bars(text1, text2, text3, font, text_color, x1, x2, x3, y):
@@ -206,12 +199,22 @@ while run:
         # Display Victory or Defeat
         checkGameState()  # This function now also handles drawing victory/defeat screen
 
+        draw_new_game_button()  # Draw the new game button
+
+        # QUIT EVENT
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     run = False
+
+         # CLICK EVENT
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if global_var.game_over != 0:
+                    if check_new_game_button_click(pygame.mouse.get_pos()):
+                        start_new_game()
+                        continue  # Skip the rest of the loop to avoid further processing
 
     # Display Update
     pygame.display.update()

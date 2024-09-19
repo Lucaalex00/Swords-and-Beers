@@ -4,7 +4,7 @@ import pygame
 import random
 
 # SETTINGS # 
-from settings.settings import screen
+from settings.settings import screen, screen_width, screen_height, controls_panel
 from settings.images import victory_img, defeat_img
 from settings.colors import colors
 
@@ -127,25 +127,32 @@ def checkGameState():
     WinCheck()  # Check for win condition
 
     # Create a new surface with the same dimensions as the screen and support for alpha transparency
-    overlay = pygame.Surface((screen.get_width(), screen.get_height()), pygame.SRCALPHA)
+    overlay = pygame.Surface((screen_width, screen_height - controls_panel), pygame.SRCALPHA)
+    
     
     if global_var.game_over == 1:
+
+        # Make sure mouse is visible
+        pygame.mouse.set_visible(True)
 
         # Fill the overlay with a dark green color at 50% opacity
         overlay.fill((0, 100, 0, 128))  # RGB and Alpha (128 is 50% opacity)
 
         screen.blit(overlay, (0, 0))  # Draw the overlay on the screen
 
-        screen.blit(victory_img, (350, 300))  # Draw the victory image on top of the overlay
+        screen.blit(victory_img, (360, 220))  # Draw the victory image on top of the overlay
 
     elif global_var.game_over == -1:
+
+        # Make sure mouse is visible
+        pygame.mouse.set_visible(True)
 
         # Fill the overlay with a dark red color at 50% opacity
         overlay.fill((139, 0, 0, 128))  # RGB and Alpha (128 is 50% opacity)
 
         screen.blit(overlay, (0, 0))  # Draw the overlay on the screen
 
-        screen.blit(defeat_img, (350, 300))  # Draw the defeat image on top of the overlay
+        screen.blit(defeat_img, (380, 220))  # Draw the defeat image on top of the overlay
 
     return True  # Continue the game if no end game condition is met
 
