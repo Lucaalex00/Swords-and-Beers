@@ -70,8 +70,8 @@ def draw_text_bars(text1, text2, text3, font, text_color, x1, x2, x3, y):
 
 # Main game Loop
 run = True
-while run:
 
+while run:
     # Set FPS (60)
     clock.tick(fps)
 
@@ -99,16 +99,15 @@ while run:
 
     # Draw Potion Button
     if potion_button.draw(screen):
-        if global_var.game_over == 0:  # Check if the game is not over
-            if not button_clicked:  # Only perform action if button was not clicked recently
+        if global_var.game_over == 0:
+            if not button_clicked:
                 global_var.potionAction = True
-                button_clicked = True  # Set flag to prevent repeated action
+                button_clicked = True
     else:
-        # Do not handle button clicks if game is over
-        button_clicked = False  # Ensure button_clicked flag is reset
+        button_clicked = False
 
     # Show potions numbers
-    draw_text(str(knight.potions), font_potion, colors['red']['dark'], screen, 80, screen_height - controls_panel + 25)        
+    draw_text(str(knight.potions), font_potion, colors['red']['opaque'], screen, 80, screen_height - controls_panel + 25)        
 
     # Draw Damage Text
     damage_text_group.update()
@@ -117,9 +116,8 @@ while run:
     # Draw Skill Button
     skill_menu.draw_skill_button()
     
-    # SKILL MENU EVENTS
+    # Handle Events
     for event in pygame.event.get():
-        # QUIT EVENT
         if event.type == pygame.QUIT:
             user_choice = confirmation_screen()
             if user_choice == "close":
@@ -129,16 +127,14 @@ while run:
                 user_choice = confirmation_screen()
                 if user_choice == "close":
                     run = False
-        # CLICK EVENT
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            skill_menu.handle_skill_events(event)  # Assicurati che questo metodo venga chiamato
             global_var.clicked = True
-            global_var.click_position = pygame.mouse.get_pos()  # Save click position
-        
-        # Handle skill menu events
-        skill_menu.handle_skill_events(event)
+            global_var.click_position = pos
 
     if global_var.game_over == 0:
-        # Fight Event Managements #
+        # Handle Attacks
         playerAttackAction()
         enemyAttackAction()
         run = checkGameState()
@@ -146,8 +142,7 @@ while run:
         pygame.mouse.set_visible(True)
         pos = pygame.mouse.get_pos()
 
-        # ATTACK INIT & SET ENEMY CLICKED
-        sword_visible = False  # Flag to track sword visibility
+        sword_visible = False
 
         for count, bandit in enumerate(bandit_list):
             if bandit.rect.collidepoint(pos):
@@ -161,8 +156,11 @@ while run:
                         global_var.target = bandit_list[count]
                         global_var.clicked = False
                         global_var.click_position = None
+                        
+                        # Passa bandit_list al metodo select_target
+                        skill_menu.select_target(pos, bandit_list)
                         break
-                else:
+
                     if sword_visible:
                         pygame.mouse.set_visible(True)
                         sword_visible = False
@@ -175,22 +173,18 @@ while run:
         checkGameState()
         draw_new_game_button()
 
-        # QUIT EVENT
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     run = False
-            # SKILL MENU EVENTS
-            skill_menu.handle_skill_events(event)
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 if global_var.game_over != 0:
                     if check_new_game_button_click(pygame.mouse.get_pos()):
                         start_new_game()
                         continue
 
-    # Display Update
     pygame.display.update()
 
 # Close Pygame

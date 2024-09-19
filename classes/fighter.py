@@ -127,43 +127,40 @@ class Fighter() :
 
     # Attack Function
     def attack(self, target):
-
-    # Deal damage to target
-
         if target.alive and self.alive:
-
             # DMG Range
             randRange = random.randint(-5, 5)
-        
-            # Add randRange with self.strength
+            # Calcola il danno
             damage = self.strength + randRange
-            
-            # Remove target.hp with damage output
+            print(damage)
+            # Infliggi il danno
             target.hp -= damage
 
-            # Text appears while Attacking
+            # Crea il testo del danno
             damage_text = DamageText(target.rect.centerx, target.rect.y, str(damage), colors['red']['opaque'])
             damage_text_group.add(damage_text)
 
-            self.action = 1 # ATTACK
+            self.action = 1  # ATTACK
             target.hurt()
 
-        # Check if target has DIED
-        if target.hp < 1:
-            target.hp = 0
-            target.alive = False
-            target.died()
+            # Controlla se il bersaglio è morto
+            if target.hp < 1:
+                target.hp = 0
+                target.alive = False
+                target.died()
 
             self.frame_index = 0
             self.update_time = pygame.time.get_ticks()
+            return damage  # Restituisci il danno inflitto
+        return 0
 
 
 # Playable Characters
-knight = Fighter(250, 400,'Knight', 12, 10, 13, 3)
+knight = Fighter(250, 400,'Knight', 151, 60, 13, 3)
 
 # Enemies
-bandit1 = Fighter(850, 400, 'Bandit', 5, 5, 8, 1)
-bandit2 = Fighter(700, 420, 'Bandit', 5, 5, 8, 1)
+bandit1 = Fighter(850, 400, 'Bandit', 45, 5, 8, 1)
+bandit2 = Fighter(700, 420, 'Bandit', 45, 5, 8, 1)
 
 # ADD to list
 bandit_list = []

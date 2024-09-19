@@ -11,6 +11,9 @@ click_position = None
 clicked = False
 
 # End Game Controls
+game_over = 0  # -1 = LOSE / 1 = WIN
+alive_bandits = 0  # Count enemies alive
 
-game_over = 0 # -1 = LOSE / 1 = WIN
-alive_bandits = 0 # Count enemies alive
+# LifeSteal Skill
+lifeStealActive = False
+
