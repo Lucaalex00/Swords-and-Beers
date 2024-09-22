@@ -156,7 +156,7 @@ class Fighter() :
 
 
 # Playable Characters
-knight = Fighter(250, 400,'Knight', 151, 60, 13, 3)
+knight = Fighter(250, 400,'Knight', 11, 60, 13, 3)
 
 # Enemies
 bandit1 = Fighter(850, 400, 'Bandit', 45, 5, 8, 1)

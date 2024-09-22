@@ -1,5 +1,3 @@
-# ExitEvent.py
-
 import pygame
 import sys
 import time
@@ -66,6 +64,7 @@ def confirmation_screen():
 
         # Draw Buttons "Close" and "Cancel"
         close_action = draw_button("Leave", screen_width // 2 - 150, screen_height // 2, 100, 50, colors['red']['dark'], (200, 0, 0), action="close")
+        
         cancel_action = draw_button("Cancel", screen_width // 2 + 50, screen_height // 2, 100, 50, colors['green']['dark'], (0, 200, 0), action="cancel")
 
         # Events Management
@@ -80,3 +79,4 @@ def confirmation_screen():
             return cancel_action
 
         pygame.display.update()
+

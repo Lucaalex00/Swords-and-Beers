@@ -31,10 +31,7 @@ def draw_bg():
 
 # Def draw controls panel
 def draw_panel():
-    # Draw Rectangle area
     screen.blit(panel_img, (0, screen_height - controls_panel))
-    
-    # Def columns position
     name_col1 = 160
     hp_col1 = 270
     mana_col1 = 340
@@ -43,19 +40,13 @@ def draw_panel():
     hp_col2 = 730
     mana_col2 = 795
 
-    # Draw text in columns position
     draw_text_bars('NAME', 'HP', 'MANA', font_TNR, colors['black'], name_col1, hp_col1, mana_col1, screen_height - controls_panel + 10)
     draw_text_bars('NAME', 'HP', 'MANA', font_TNR, colors['black'], name_col2, hp_col2, mana_col2, screen_height - controls_panel + 10)
 
-    # Show NAME, HP, MANA -> KNIGHT
     draw_text_bars(f'{knight.name:>5}', f'{knight.hp:>2}', f'{knight.mana:>5}', font_TNR, colors['gray']['opaque'], name_col1 + 2, hp_col1 + 2, mana_col1 + 5, screen_height - controls_panel + 40)
 
-    # FOR Cycle in bandit_list
     for distance, bandit in enumerate(bandit_list):
-        # Calc Y spacing for every bandit
         y_offset = (screen_height - controls_panel) + 40 + distance * 50
-
-        # Show NAME, HP, MANA -> BANDIT
         draw_text_bars(f'{bandit.name:>5}', f'{bandit.hp:>2}', f'{bandit.mana:>6}', font_TNR, colors['gray']['opaque'], name_col2, hp_col2, mana_col2, y_offset)
 
 # Def draw text bars (STATS) in controls panel
@@ -70,16 +61,15 @@ def draw_text_bars(text1, text2, text3, font, text_color, x1, x2, x3, y):
 
 # Main game Loop
 run = True
+game_over = False
+confirmation_active = False
 
 while run:
-    # Set FPS (60)
     clock.tick(fps)
-
-    # Draw Background
     draw_bg()
-
-    # Draw Menu
     draw_panel()
+    
+    # Draw Health and Mana Bars
     knight_health_bar.draw_hp(knight.hp)
     bandit1_health_bar.draw_hp(bandit1.hp)
     bandit2_health_bar.draw_hp(bandit2.hp)
@@ -88,11 +78,10 @@ while run:
     bandit1_mana_bar.draw_mana(bandit1.mana)
     bandit2_mana_bar.draw_mana(bandit2.mana)
 
-    # Draw Fighter
+    # Update and draw knight and bandits
     knight.update()
     knight.draw()
 
-    # Draw Enemies  
     for bandit in bandit_list:
         bandit.draw()
         bandit.update()
@@ -115,33 +104,41 @@ while run:
 
     # Draw Skill Button
     skill_menu.draw_skill_button()
-    
+
     # Handle Events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            user_choice = confirmation_screen()
-            if user_choice == "close":
-                run = False
+            confirmation_active = True
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
-                user_choice = confirmation_screen()
-                if user_choice == "close":
-                    run = False
+                confirmation_active = True
         elif event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
-            skill_menu.handle_skill_events(event)  # Assicurati che questo metodo venga chiamato
+            skill_menu.handle_skill_events(event) 
             global_var.clicked = True
             global_var.click_position = pos
+            
+            # Check if "New Game" button is clicked
+            if global_var.game_over != 0 and check_new_game_button_click(pos):
+                start_new_game()
+
+    if confirmation_active:
+        user_choice = confirmation_screen()
+
+        if user_choice == "close":
+            run = False
+            break
+        elif user_choice == "cancel":
+            confirmation_active = False  # Reset for next interaction
 
     if global_var.game_over == 0:
-        # Handle Attacks
         playerAttackAction()
         enemyAttackAction()
+        
         run = checkGameState()
         resetAttackActions()
-        pygame.mouse.set_visible(True)
-        pos = pygame.mouse.get_pos()
 
+        pos = pygame.mouse.get_pos()
         sword_visible = False
 
         for count, bandit in enumerate(bandit_list):
@@ -156,8 +153,6 @@ while run:
                         global_var.target = bandit_list[count]
                         global_var.clicked = False
                         global_var.click_position = None
-                        
-                        # Passa bandit_list al metodo select_target
                         skill_menu.select_target(pos, bandit_list)
                         break
 
@@ -168,28 +163,11 @@ while run:
             if sword_visible:
                 pygame.mouse.set_visible(True)
                 sword_visible = False
-
     else:
         checkGameState()
         draw_new_game_button()
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    run = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                if global_var.game_over != 0:
-                    if check_new_game_button_click(pygame.mouse.get_pos()):
-                        start_new_game()
-                        continue
-
     pygame.display.update()
-
-# Close Pygame
-pygame.quit()
-sys.exit()
 
 # Close Pygame
 pygame.quit()
