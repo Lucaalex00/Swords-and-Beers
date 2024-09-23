@@ -126,13 +126,19 @@ if global_var.game_over == 0:
 
     # If all fighter had a turn then reset
     def resetAttackActions():
-        global current_fighter, action_cooldown # Set Global Declaration
+        global current_fighter, action_cooldown  # Set Global Declaration
 
         if current_fighter > total_fighters:
+            if not global_var.turn_incremented:  # Controlla se non è già stato incrementato
+                global_var.turn_count += 1
+                global_var.turn_incremented = True  # Marca come incrementato
+
             current_fighter = 1
             knight.mana_update()
             for bandit in bandit_list:
                 bandit.mana_update()
+        else:
+            global_var.turn_incremented = False  # Resetta la variabile se non è un turno nuovo
 
 
 # Main loop check for game state

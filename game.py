@@ -2,10 +2,10 @@ import pygame
 import sys
 import global_var 
 
-from settings.settings import screen, screen_height, controls_panel
+from settings.settings import screen, screen_width, screen_height, controls_panel
 from settings.colors import colors
 from settings.images import background_img, panel_img, sword_img
-from settings.fonts import font_TNR, font_potion
+from settings.fonts import font_TNR, font_potion, font_turn_text
 
 from classes.fighter import knight, bandit_list, bandit1, bandit2
 from classes.healthbar import knight_health_bar, bandit1_health_bar, bandit2_health_bar
@@ -59,6 +59,13 @@ def draw_text_bars(text1, text2, text3, font, text_color, x1, x2, x3, y):
     screen.blit(img2, (x2, y))
     screen.blit(img3, (x3, y))
 
+# Def draw turn counts
+def draw_turn_counts():
+    turn_text = f"Turn : {global_var.turn_count}"
+    turn_img = font_turn_text.render(turn_text, True, colors['black'])
+    text_rect = turn_img.get_rect(center=(screen_width // 2, screen_height // 2 + 150))
+    screen.blit(turn_img, text_rect)
+
 # Main game Loop
 run = True
 game_over = False
@@ -77,6 +84,9 @@ while run:
     knight_mana_bar.draw_mana(knight.mana)
     bandit1_mana_bar.draw_mana(bandit1.mana)
     bandit2_mana_bar.draw_mana(bandit2.mana)
+
+    # Draw Turn Counter
+    draw_turn_counts()
 
     # Update and draw knight and bandits
     knight.update()
@@ -172,7 +182,7 @@ while run:
                         global_var.clicked = False  # Reset click state
                         global_var.click_position = None  # Reset click position
                         skill_menu.select_target(pos, bandit_list)  # Select target from skill menu
-                        
+
                         break  # Exit loop after handling click
 
         # If the cursor is not hovering over any bandit

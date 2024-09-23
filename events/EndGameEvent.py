@@ -56,6 +56,7 @@ def start_new_game():
     global_var.potionAction = False
     global_var.attackAction = False
     global_var.target = None
+    global_var.turn_count = 0
 
     # Reset dei personaggi
     knight.reset()

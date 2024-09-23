@@ -1,5 +1,9 @@
 # GLOBAL VARIABLES
 
+# Display TIMER (Turns)
+turn_count = 1
+turn_incremented = False
+
 # Fight Controls
 attackAction = False
 potionAction = False
