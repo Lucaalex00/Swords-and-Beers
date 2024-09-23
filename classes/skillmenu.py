@@ -38,7 +38,7 @@ class SkillMenu:
 
         # If the menu is open, draw the skill menu
         if self.skill_menu_open:
-            pygame.draw.rect(screen, colors['blue']['opaque'], self.skill_menu_rect)  # Menu background
+            pygame.draw.rect(screen, colors['blue']['dark'], self.skill_menu_rect)  # Menu background
             
             num_skills = len(self.skills)
             skill_box_width = screen_width / num_skills  # Width for each skill

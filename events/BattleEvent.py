@@ -63,7 +63,7 @@ if global_var.game_over == 0:
                         current_fighter += 1
                         action_cooldown = 0
                         if knight.max_hp - knight.hp > global_var.potionEffect:
-                            heal_amount = global_var.potionEffect + random.randint(0, 5) 
+                            heal_amount = global_var.potionEffect + random.randint(0, 10) 
                         else:
                             heal_amount = knight.max_hp - knight.hp
 
@@ -99,7 +99,7 @@ if global_var.game_over == 0:
                     if action_cooldown >= action_wait_time:
 
                         # Check if healing is needed
-                        if knight.strength > bandit.hp and bandit.potions > 0:
+                        if bandit.hp <= bandit.max_hp / 2 and bandit.potions > 0:
                             bandit.potions -= 1
                             current_fighter += 1
                             action_cooldown = 0
@@ -130,6 +130,9 @@ if global_var.game_over == 0:
 
         if current_fighter > total_fighters:
             current_fighter = 1
+            knight.mana_update()
+            for bandit in bandit_list:
+                bandit.mana_update()
 
 
 # Main loop check for game state

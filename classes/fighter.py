@@ -10,17 +10,19 @@ from classes.damagetext import DamageText, damage_text_group
 class Fighter() :
 
     # Constructor
-    def __init__(self, x, y, name, max_hp, max_mana, strength, potions):
+    def __init__(self, x, y, name, max_hp, max_mana, strength, potions, is_enemy):
         self.name = name
         self.max_hp = max_hp
         self.hp = max_hp
         self.max_mana = max_mana
         self.mana = max_mana
         self.strength = strength
+        self.start_strength = strength  # START STRENGTH VALUE
         self.start_potions = potions
         self.potions = potions
         self.alive = True
         self.action = 0 # 0: Idle - 1: Attack - 2: Hurt - 3: Dead 
+        self.is_enemy = is_enemy
 
         # POSITIONING
         self.start_x = x
@@ -68,7 +70,7 @@ class Fighter() :
 
         # Avatar position
         self.rect = self.image.get_rect()
-        self.rect.center= (x, y)
+        self.rect.center = (x, y)
         print(f'{name} rect: {self.rect}')  # Verifica la posizione e dimensione del rettangolo
 
     # Draw Function
@@ -102,6 +104,7 @@ class Fighter() :
         self.hp = self.max_hp
         self.mana = self.max_mana
         self.potions = self.start_potions
+        self.strength = self.start_strength
         self.alive = True
         self.action = 0  # IDLE
         self.frame_index = 0
@@ -126,22 +129,32 @@ class Fighter() :
         self.update_time = pygame.time.get_ticks() 
 
     # Attack Function
+        
     def attack(self, target):
         if target.alive and self.alive:
-            # DMG Range
-            randRange = random.randint(-5, 5)
-            # Calcola il danno
-            damage = self.strength + randRange
-            print(damage)
+
+            # Verifica se il combattente è un nemico e ha abbastanza mana per la Frenzy Attack
+            if self.is_enemy and self.mana >= 5:
+                # Frenzy Attack
+                print(f"{self.name} uses Frenzy Attack!")
+                damage = round((self.strength * self.mana) / 2)  # Frenzy infligge danno in base alla forza e mana
+                self.mana = 0  # Consuma tutto il mana del bandit
+
+            else:
+                # Normale attacco
+                print(f"{self.name} attacks normally!")
+                randRange = random.randint(-5, 5)
+                damage = self.strength + randRange
+
+            # Animazione dell'attacco
+            self.action = 1  # Setta lo stato ad "Attack"
+            self.frame_index = 0
+            self.update_time = pygame.time.get_ticks()
+
             # Infliggi il danno
             target.hp -= damage
-
-            # Crea il testo del danno
             damage_text = DamageText(target.rect.centerx, target.rect.y, str(damage), colors['red']['opaque'])
             damage_text_group.add(damage_text)
-
-            self.action = 1  # ATTACK
-            target.hurt()
 
             # Controlla se il bersaglio è morto
             if target.hp < 1:
@@ -149,18 +162,32 @@ class Fighter() :
                 target.alive = False
                 target.died()
 
+            # Mostra che il bersaglio è stato colpito
+            target.hurt()
+
+            # Resetta l'indice dell'animazione e il timer
             self.frame_index = 0
             self.update_time = pygame.time.get_ticks()
+
             return damage  # Restituisci il danno inflitto
         return 0
 
+    def mana_update(self):
+        if self.is_enemy == True:
+            mana_recupero = 3
+            self.mana += mana_recupero
+        else:
+            mana_recupero = round(self.max_mana * 0.10)
+            self.mana += mana_recupero
+        if self.mana > self.max_mana:
+            self.mana = self.max_mana
 
 # Playable Characters
-knight = Fighter(250, 400,'Knight', 11, 60, 13, 3)
+knight = Fighter(250, 400,'Knight', 50, 30, 10, 5, is_enemy = False)
 
 # Enemies
-bandit1 = Fighter(850, 400, 'Bandit', 45, 5, 8, 1)
-bandit2 = Fighter(700, 420, 'Bandit', 45, 5, 8, 1)
+bandit1 = Fighter(850, 400, 'Bandit', 35, 5, 6, 1, is_enemy = True)
+bandit2 = Fighter(700, 420, 'Bandit', 45, 5, 8, 2, is_enemy = True)
 
 # ADD to list
 bandit_list = []

@@ -3,7 +3,7 @@
 # Fight Controls
 attackAction = False
 potionAction = False
-potionEffect = 15
+potionEffect = 20
 target = None
 
 # Click Controls

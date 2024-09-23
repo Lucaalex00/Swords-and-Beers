@@ -138,31 +138,49 @@ while run:
         run = checkGameState()
         resetAttackActions()
 
-        pos = pygame.mouse.get_pos()
-        sword_visible = False
+        pos = pygame.mouse.get_pos()  # Get the current position of the mouse
 
+        # Variable to track if the sword is currently visible
+        if 'sword_visible' not in globals():
+            sword_visible = False  # Initialize sword visibility once
+
+        cursor_over_bandit = False  # Variable to track if the cursor is over any bandit
+
+        # Loop through all bandits
         for count, bandit in enumerate(bandit_list):
-            if bandit.rect.collidepoint(pos):
-                if bandit.alive:
-                    if not sword_visible:
-                        pygame.mouse.set_visible(False)
-                        screen.blit(sword_img, pos)
-                        sword_visible = True
-                    if global_var.clicked and global_var.click_position == pos:
-                        global_var.attackAction = True
-                        global_var.target = bandit_list[count]
-                        global_var.clicked = False
-                        global_var.click_position = None
-                        skill_menu.select_target(pos, bandit_list)
-                        break
 
-                    if sword_visible:
-                        pygame.mouse.set_visible(True)
-                        sword_visible = False
-        if not any(bandit.rect.collidepoint(pos) for bandit in bandit_list):
-            if sword_visible:
-                pygame.mouse.set_visible(True)
-                sword_visible = False
+            # If the mouse is hovering over a specific bandit
+            if bandit.rect.collidepoint(pos):
+                
+                # If the bandit is alive
+                if bandit.alive:
+                    
+                    cursor_over_bandit = True  # Set cursor over bandit as true
+
+                    # Only hide the cursor and show the sword if not already done
+                    if not sword_visible:
+                        pygame.mouse.set_visible(False)  # Hide the default mouse cursor
+                        sword_visible = True  # Mark the sword as visible
+                    
+                    # Draw the sword at the mouse position
+                    screen.blit(sword_img, pos)
+
+                    # Check for attack action
+                    if global_var.clicked and global_var.click_position == pos:
+                        global_var.attackAction = True  # Trigger the attack action
+                        global_var.target = bandit_list[count]  # Set the target bandit
+                        global_var.clicked = False  # Reset click state
+                        global_var.click_position = None  # Reset click position
+                        skill_menu.select_target(pos, bandit_list)  # Select target from skill menu
+                        
+                        break  # Exit loop after handling click
+
+        # If the cursor is not hovering over any bandit
+        if not cursor_over_bandit:
+            if sword_visible:  # If the sword is currently visible
+                pygame.mouse.set_visible(True)  # Show the normal mouse cursor
+                sword_visible = False  # Reset the sword visibility flag
+
     else:
         checkGameState()
         draw_new_game_button()
