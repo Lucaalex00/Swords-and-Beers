@@ -10,6 +10,10 @@ potionAction = False
 potionEffect = 20
 target = None
 
+current_fighter = 1
+action_cooldown = 0
+last_attack_damage = 0
+
 # Click Controls
 click_position = None
 clicked = False

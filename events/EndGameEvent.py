@@ -51,16 +51,20 @@ def check_new_game_button_click(position):
     return button_rect.collidepoint(position)
 
 def start_new_game():
-    # Reset delle variabili globali
+    # RESET
     global_var.game_over = 0
     global_var.potionAction = False
     global_var.attackAction = False
     global_var.target = None
-    global_var.turn_count = 0
+    global_var.turn_count = 1
 
-    # Reset dei personaggi
+    global_var.current_fighter = 1  # KNIGHT START
+    global_var.action_cooldown = 0  # Cooldown set to 0
+
+    # character's reset
     knight.reset()
 
     for bandit in bandit_list:
         bandit.reset()
-        
+
+                

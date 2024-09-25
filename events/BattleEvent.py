@@ -19,24 +19,20 @@ from events.EndGameEvent import GameOverCheck, WinCheck
 import global_var
 
 # Define Variables
-current_fighter = 1
-total_fighters = len(bandit_list) + current_fighter
-action_cooldown = 0
+total_fighters = len(bandit_list) + global_var.current_fighter
 action_wait_time = 90
 
 # Initialize the global damage variable
-global_var.last_attack_damage = 0
 
 if global_var.game_over == 0:
    # Player action
     def playerAttackAction():
-        global current_fighter, action_cooldown
 
         if knight.alive:
-            if current_fighter == 1:
-                action_cooldown += 1
+            if global_var.current_fighter == 1:
+                global_var.action_cooldown += 1
 
-                if action_cooldown >= action_wait_time:
+                if global_var.action_cooldown >= action_wait_time:
 
                     # Attack
                     if global_var.attackAction and global_var.target is not None:
@@ -54,14 +50,14 @@ if global_var.game_over == 0:
                         
                         global_var.attackAction = False  # RESET
                         global_var.target = None  # RESET
-                        current_fighter += 1
-                        action_cooldown = 0
+                        global_var.current_fighter += 1
+                        global_var.action_cooldown = 0
 
                 # Potion
                 if global_var.potionAction: 
                     if knight.potions > 0:
-                        current_fighter += 1
-                        action_cooldown = 0
+                        global_var.current_fighter += 1
+                        global_var.action_cooldown = 0
                         if knight.max_hp - knight.hp > global_var.potionEffect:
                             heal_amount = global_var.potionEffect + random.randint(0, 10) 
                         else:
@@ -89,20 +85,19 @@ if global_var.game_over == 0:
 
     # Enemy action
     def enemyAttackAction():
-        global current_fighter, action_cooldown # Set Global Declaration
 
         # Cycle through bandit_list
         for count, bandit in enumerate(bandit_list):
-            if current_fighter == 2 + count:
+            if global_var.current_fighter == 2 + count:
                 if bandit.alive:
-                    action_cooldown += 1
-                    if action_cooldown >= action_wait_time:
+                    global_var.action_cooldown += 1
+                    if global_var.action_cooldown >= action_wait_time:
 
                         # Check if healing is needed
                         if bandit.hp <= bandit.max_hp / 2 and bandit.potions > 0:
                             bandit.potions -= 1
-                            current_fighter += 1
-                            action_cooldown = 0
+                            global_var.current_fighter += 1
+                            global_var.action_cooldown = 0
 
                             # Calculate the amount of healing needed
                             heal_amount = global_var.potionEffect
@@ -118,22 +113,21 @@ if global_var.game_over == 0:
                         else:
                             # Attack
                             bandit.attack(knight)
-                            current_fighter += 1
-                            action_cooldown = 0
+                            global_var.current_fighter += 1
+                            global_var.action_cooldown = 0
                 else:
-                    current_fighter += 1
+                    global_var.current_fighter += 1
 
 
     # If all fighter had a turn then reset
     def resetAttackActions():
-        global current_fighter, action_cooldown  # Set Global Declaration
 
-        if current_fighter > total_fighters:
+        if global_var.current_fighter > total_fighters:
             if not global_var.turn_incremented:  # Controlla se non è già stato incrementato
                 global_var.turn_count += 1
                 global_var.turn_incremented = True  # Marca come incrementato
 
-            current_fighter = 1
+            global_var.current_fighter = 1
             knight.mana_update()
             for bandit in bandit_list:
                 bandit.mana_update()

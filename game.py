@@ -2,17 +2,21 @@ import pygame
 import sys
 import global_var 
 
+# SETTINGS #
 from settings.settings import screen, screen_width, screen_height, controls_panel
 from settings.colors import colors
 from settings.images import background_img, panel_img, sword_img
 from settings.fonts import font_TNR, font_potion, font_turn_text
 
+# CLASSES #
 from classes.fighter import knight, bandit_list, bandit1, bandit2
 from classes.healthbar import knight_health_bar, bandit1_health_bar, bandit2_health_bar
 from classes.manabar import knight_mana_bar, bandit1_mana_bar, bandit2_mana_bar
 from classes.potionbutton import potion_button, button_clicked
 from classes.damagetext import damage_text_group
 from classes.skillmenu import SkillMenu
+
+# EVENTS # 
 from events.ExitEvent import confirmation_screen, draw_text
 from events.BattleEvent import playerAttackAction, enemyAttackAction, resetAttackActions, checkGameState
 from events.EndGameEvent import draw_new_game_button, start_new_game, check_new_game_button_click
@@ -109,9 +113,10 @@ while run:
     draw_text(str(knight.potions), font_potion, colors['red']['opaque'], screen, 80, screen_height - controls_panel + 25)        
 
     # Draw Damage Text
+    # Draw Skill Throw Text
     damage_text_group.update()
     damage_text_group.draw(screen)
-
+    
     # Draw Skill Button
     skill_menu.draw_skill_button()
 

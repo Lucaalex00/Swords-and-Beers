@@ -6,6 +6,7 @@ from settings.colors import colors
 from settings.fonts import font_skills, font_TNR
 from settings.images import skill_menu_img
 from classes.fighter import knight
+from classes.skilltext import SkillText
 from events.BattleEvent import damage_text_group, DamageText
 
 # Button dimensions for skills
@@ -16,9 +17,9 @@ class SkillMenu:
     def __init__(self):
         self.skill_menu_open = False
         self.skills = [
-            {"name": "Shield Bash", "mana_cost": 10, "effect": "Mana Drain + DMG 10% MAX_HP"},
+            {"name": "Shield Bash", "mana_cost": 10, "effect": "Mana Drain + DMG 10% HP"},
             {"name": "Vampire Slash", "mana_cost": 15, "effect": "LifeSteal"},
-            {"name": "Sharpness", "mana_cost": 30, "effect": "Strength * 2"},
+            {"name": "Sharpness", "mana_cost": 30, "effect": "STRENGTH++ (50%)"},
         ]
 
         # Position of the skill menu button
@@ -81,6 +82,11 @@ class SkillMenu:
                     self.current_skill_name = self.current_skill['name']
                     self.skill_name_display_time = 100
 
+                    # Skill name appears on screen
+                    skill_text = SkillText(knight.rect.centerx, knight.rect.y - 50, self.current_skill_name, font_TNR, colors['yellow']['dark'])
+                    damage_text_group.add(skill_text)
+
+                    ### SHIELD BASH (KNIGHT) ###
                     if self.current_skill['name'] == "Shield Bash":
                         damage = round(bandit.max_hp * 0.10)
                         bandit.hp -= damage
@@ -89,12 +95,15 @@ class SkillMenu:
                         DMG_text = DamageText(bandit.rect.centerx, bandit.rect.y + 20, str(damage), colors['yellow']['opaque'])
                         damage_text_group.add(DMG_text)
 
+                    ### VAMPIRE SLASH (KNIGHT) ###
                     elif self.current_skill['name'] == "Vampire Slash":
+
                         # Activate LifeSteal
                         global_var.lifeStealActive = True
 
+                    ### SHARPNESS (KNIGHT) ###
                     elif self.current_skill['name'] == "Sharpness":
-                        knight.strength *= 2
+                        knight.strength *= 1.5
 
                     self.current_skill = None
                 break
@@ -102,5 +111,7 @@ class SkillMenu:
     def draw_skill_name(self):
         if self.current_skill_name and self.skill_name_display_time > 0:
             skill_name_surface = font_TNR.render(self.current_skill_name, True, colors['white'])
+
             screen.blit(skill_name_surface, (screen_width // 2 - skill_name_surface.get_width() // 2, screen.get_height() // 2 - skill_name_surface.get_height() // 2))
+
             self.skill_name_display_time -= 1
