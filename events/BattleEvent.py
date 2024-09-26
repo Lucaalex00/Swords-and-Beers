@@ -123,16 +123,16 @@ if global_var.game_over == 0:
     def resetAttackActions():
 
         if global_var.current_fighter > total_fighters:
-            if not global_var.turn_incremented:  # Controlla se non è già stato incrementato
+            if not global_var.turn_incremented:  # Check if turn is not incremented
                 global_var.turn_count += 1
-                global_var.turn_incremented = True  # Marca come incrementato
+                global_var.turn_incremented = True  # Set True on Global_var turn incremented
 
             global_var.current_fighter = 1
             knight.mana_update()
             for bandit in bandit_list:
                 bandit.mana_update()
         else:
-            global_var.turn_incremented = False  # Resetta la variabile se non è un turno nuovo
+            global_var.turn_incremented = False  # RESET on false if is not a new turn.
 
 
 # Main loop check for game state

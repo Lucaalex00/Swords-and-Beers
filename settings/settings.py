@@ -14,5 +14,4 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 # This text will appear in the window's title bar.
 pygame.display.set_caption('Swords & Beers')
 
-# Define fonts
 

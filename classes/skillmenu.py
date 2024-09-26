@@ -1,12 +1,19 @@
+# skillmenu.py
+
 import pygame
 import global_var  # Import global variables
 
+# SETTINGS #
 from settings.settings import screen, screen_width
 from settings.colors import colors
 from settings.fonts import font_skills, font_TNR
 from settings.images import skill_menu_img
+
+# CLASSES #
 from classes.fighter import knight
 from classes.skilltext import SkillText
+
+# EVENTS #
 from events.BattleEvent import damage_text_group, DamageText
 
 # Button dimensions for skills
@@ -39,7 +46,7 @@ class SkillMenu:
 
         # If the menu is open, draw the skill menu
         if self.skill_menu_open:
-            pygame.draw.rect(screen, colors['blue']['dark'], self.skill_menu_rect)  # Menu background
+            pygame.draw.rect(screen, colors['gray']['dark'], self.skill_menu_rect)  # Menu background
             
             num_skills = len(self.skills)
             skill_box_width = screen_width / num_skills  # Width for each skill

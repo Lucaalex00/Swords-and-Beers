@@ -1,5 +1,8 @@
+# potionbutton.py
+
 import pygame
 
+# SETINGS #
 from settings.settings import screen_height
 from settings.images import potion_img
 

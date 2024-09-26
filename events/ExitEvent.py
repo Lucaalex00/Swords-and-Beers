@@ -1,6 +1,10 @@
+# ExitEvent.py
+
 import pygame
 import sys
 import time
+
+# SETTINGS # 
 from settings.colors import colors
 from settings.settings import screen_width, screen_height, screen
 
@@ -17,7 +21,7 @@ def draw_text(text, font, color, surface, x, y):
     textrect.center = (x, y)
     surface.blit(textobj, textrect)
 
-# Funzione per disegnare i pulsanti
+# def draw_button 
 def draw_button(text, x, y, w, h, color, hover_color, action=None):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
@@ -33,7 +37,7 @@ def draw_button(text, x, y, w, h, color, hover_color, action=None):
 
     return None
 
-# Funzione per la schermata di conferma
+# def confirmation_screen
 def confirmation_screen():
     start_time = time.time() + 1
 
@@ -41,9 +45,10 @@ def confirmation_screen():
     pygame.mouse.set_visible(True)
     
     while True:
-        # Creare una superficie con canale alfa per lo sfondo trasparente
+
+        # Overlay with an alpha background
         overlay = pygame.Surface((screen_width, screen_height), pygame.SRCALPHA)
-        overlay.fill((10, 0, 0, 180))  # Nero con trasparenza (valore alfa: 180)
+        overlay.fill((10, 0, 0, 180))  # black with opacity (Alpha: 180)
 
         # Fill main screen
         screen.fill((0, 0, 0))

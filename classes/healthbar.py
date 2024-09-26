@@ -1,8 +1,12 @@
 # healthbar.py
 
 import pygame
+
+# SETTINGS #
 from settings.settings import screen,  screen_height, controls_panel
 from settings.colors import colors
+
+# CLASSES #
 from classes.fighter import knight, bandit1, bandit2
 class HealthBar():
     def __init__(self, x, y, hp, max_hp):

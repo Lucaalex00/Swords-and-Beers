@@ -4,7 +4,7 @@ import pygame
 
 pygame.init()
 class DamageText(pygame.sprite.Sprite):
-    # Usare SysFont per caricare un font di sistema
+    # Use sysFont for System Font
     font_damage_text = pygame.font.SysFont('Arial', 26)
 
     def __init__(self, x, y, damage, color):

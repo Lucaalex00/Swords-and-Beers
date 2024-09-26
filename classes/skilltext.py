@@ -1,3 +1,5 @@
+# skilltext.py
+
 import pygame
 
 class SkillText(pygame.sprite.Sprite):

@@ -1,5 +1,9 @@
+# game.py 
+
 import pygame
 import sys
+
+# GLOBAL VAR #
 import global_var 
 
 # SETTINGS #
@@ -76,7 +80,11 @@ game_over = False
 confirmation_active = False
 
 while run:
+
+    # Set FPS to "CLOCK VALUE"
     clock.tick(fps)
+
+    # Draw Background & Menu Panel
     draw_bg()
     draw_panel()
     
@@ -147,12 +155,18 @@ while run:
             confirmation_active = False  # Reset for next interaction
 
     if global_var.game_over == 0:
+
+        # PLAYER ACTION
         playerAttackAction()
+
+        # ENEMY ACTION
         enemyAttackAction()
         
+        # CHECK if GAME IS DONE and RESET ACTIONS
         run = checkGameState()
         resetAttackActions()
 
+        # Keep Mouse Position
         pos = pygame.mouse.get_pos()  # Get the current position of the mouse
 
         # Variable to track if the sword is currently visible
@@ -192,7 +206,9 @@ while run:
 
         # If the cursor is not hovering over any bandit
         if not cursor_over_bandit:
+
             if sword_visible:  # If the sword is currently visible
+                
                 pygame.mouse.set_visible(True)  # Show the normal mouse cursor
                 sword_visible = False  # Reset the sword visibility flag
 

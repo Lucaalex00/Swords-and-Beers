@@ -1,8 +1,12 @@
-# healthbar.py
+# manabar.py
 
 import pygame
+
+# SETTINGS #
 from settings.settings import screen,  screen_height, controls_panel
 from settings.colors import colors
+
+# CLASSES #
 from classes.fighter import knight, bandit1, bandit2
 
 class ManaBar():
@@ -14,6 +18,7 @@ class ManaBar():
         self.max_mana = max_mana
     
     def draw_mana(self, mana):
+        
         # Update self.mana with current mana value
         self.mana = mana
 

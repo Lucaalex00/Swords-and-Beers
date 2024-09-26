@@ -90,24 +90,20 @@ class Fighter() :
         # Update Image
         self.image = self.animation_list[self.action][self.frame_index]
         
-        # Log stato corrente
-        print(f"Azione corrente: {self.action}")
-
         # Check if enough time has passed since the last update
         if pygame.time.get_ticks() - self.update_time > animation_cooldown:
             self.update_time = pygame.time.get_ticks()
             self.frame_index += 1
 
             # Death Animation (check if the character is dead and trigger death animation)
-            if self.action == 3:  # Se l'azione è DEATH
+            if self.action == 3:  # Check if == DEATH
                 if self.frame_index >= len(self.animation_list[self.action]):
-                    print(f"Personaggio {self.name} morto, blocco l'animazione sull'ultimo frame.")
-                    self.frame_index = len(self.animation_list[self.action]) - 1  # Rimani sull'ultima immagine
+                    self.frame_index = len(self.animation_list[self.action]) - 1  # Stop on the latest frame
             else:
                 # Handle other animations
                 if self.frame_index >= len(self.animation_list[self.action]):
-                    self.idle()  # Torna a idle solo se non è morto
-                    self.frame_index = 0  # Reset dell'indice per idle
+                    self.idle()  # back to IDLE if is not DEAD
+                    self.frame_index = 0  # RESET INDEX
     # Reset Function
     def reset(self):
         self.hp = self.max_hp
@@ -134,11 +130,11 @@ class Fighter() :
         self.update_time = pygame.time.get_ticks() 
 
     def died(self):
-        if self.alive:  # Controlla se è vivo prima di eseguire
-            self.action = 3  # Imposta l'azione a DEATH
-            self.frame_index = 0  # Inizia dall'inizio dell'animazione di morte
+        if self.alive:  # Check if Alive == True
+            self.action = 3  # DEATH 
+            self.frame_index = 0  # Start animation
             self.update_time = pygame.time.get_ticks()
-            self.alive = False  # Imposta alive a False         
+            self.alive = False  # Set Alive = False         
 
     # Attack Function
     def attack(self, target):
@@ -163,6 +159,14 @@ class Fighter() :
                 randRange = random.randint(-5, 5)
                 damage = round(self.strength + randRange)
 
+                # Check if it's a critical hit (random number from 1 to 10, critical if it's 10)
+                crit_chance = random.randint(1, 10)
+                if crit_chance == 10:
+                    damage = round(damage * 1.5)  # 1.5x multiplier for critical hit
+
+                    damage_text = DamageText(target.rect.centerx, target.rect.y - 30, "Critical!", colors['yellow']['light'])  # Visual indicator for critical hit
+                    damage_text_group.add(damage_text)
+
             # Attack animation
             self.action = 1  # ATTACK
             self.frame_index = 0    
@@ -176,9 +180,10 @@ class Fighter() :
             # Check if target is DEAD
             if target.hp < 1:
                 target.hp = 0
-                target.died()  # Assicurati che questa chiamata venga effettuata
+                target.died() # DEATH
                 print(f"{target.name} è stato ucciso.")
                 return
+            
             # Show Target's hurt animation 
             target.hurt()
 
@@ -203,11 +208,11 @@ class Fighter() :
             self.mana = self.max_mana
 
 # Playable Characters
-knight = Fighter(250, 400,'Knight', 65, 30, 33, 5, is_enemy = False)
+knight = Fighter(250 + random.randint(0, 100), 400 - random.randint(0, 50),'Knight', 75, 30, 15, 5, is_enemy = False)
 
 # Enemies
-bandit1 = Fighter(850, 400, 'Bandit', 35, 5, 6, 1, is_enemy = True)
-bandit2 = Fighter(700, 420, 'Bandit', 45, 5, 8, 2, is_enemy = True)
+bandit1 = Fighter(850 - random.randint(0, 50), 400 - random.randint(0, 50), 'Bandit', 35, 5, 6, 1, is_enemy = True)
+bandit2 = Fighter(700 - random.randint(0, 100), 420 - random.randint(0, 100), 'Bandit', 45, 5, 8, 2, is_enemy = True)
 
 # ADD to list
 bandit_list = []
